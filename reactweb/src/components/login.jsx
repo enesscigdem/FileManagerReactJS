@@ -3,7 +3,7 @@ import axios from "axios";
 import UserTable from "./UserTable";
 import "./login.css";
 
-function Login() {
+function Login({ onLoginSuccess }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -21,46 +21,50 @@ function Login() {
           password: password,
         }
       );
+      setLoginError("Giriş Başarılı");
       setIsSubmitted(true);
+      onLoginSuccess();
     } catch (error) {
       setLoginError("Kullanıcı adı veya şifre hatalı!");
     }
   };
   const renderForm = (
-    <div className="form">
-      <form onSubmit={handleLogin}>
-        <div className="input-container">
-          <label>Username </label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+    <>
+      <div className="app-login">
+        <div className="login-form">
+          <div className="title">File Orbis</div>
+          <div className="form">
+            <form onSubmit={handleLogin}>
+              <div className="input-container">
+                <label>Username </label>
+                <input
+                  type="text"
+                  value={username}
+                  required
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="input-container">
+                <label>Password </label>
+                <input
+                  type="password"
+                  value={password}
+                  required
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="button-container">
+                <input type="submit" value="Login" />
+              </div>
+            </form>
+            {loginError && <p style={{ color: "red" }}>{loginError}</p>}
+          </div>
         </div>
-        <div className="input-container">
-          <label>Password </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="button-container">
-          <input type="submit" value="Login" />
-        </div>
-      </form>
-      {loginError && <p style={{ color: "red" }}>{loginError}</p>}
-    </div>
+      </div>
+    </>
   );
 
-  return (
-    <div className="app-login">
-      <div className="login-form">
-        <div className="title">File Orbis</div>
-        {isSubmitted ? <UserTable /> : renderForm}
-      </div>
-    </div>
-  );
+  return <> {isSubmitted ? <UserTable /> : renderForm}</>;
 }
 
 export default Login;
