@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./login.css";
-import Dashboard from "../pages/Dashboard";
+import Dashboard from "../pages/FolderList";
 
 function Login({ onLoginSuccess }) {
   const [isSubmitted, setIsSubmitted] = useState(false);

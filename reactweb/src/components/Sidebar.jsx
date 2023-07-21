@@ -8,6 +8,12 @@ import {
   FaShoppingBag,
   FaThList,
   FaSignOutAlt,
+  FaList,
+  FaUserCircle,
+  FaFolder,
+  FaFolderMinus,
+  FaFolderOpen,
+  FaRegFolder,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
@@ -17,13 +23,13 @@ const Sidebar = ({ children, onLogout }) => {
   const menuItem = [
     {
       path: "/",
-      name: "Dashboard",
-      icon: <FaTh />,
+      name: "Folder List",
+      icon: <FaFolderOpen />,
     },
     {
-      path: "/about",
-      name: "About",
-      icon: <FaUserAlt />,
+      path: "/userlist",
+      name: "User List",
+      icon: <FaUserCircle />,
     },
     {
       path: "/analytics",
@@ -79,7 +85,7 @@ const Sidebar = ({ children, onLogout }) => {
         ))}
         <div className="link" activeClassName="active">
           <div className="icon">
-            <FaSignOutAlt />
+            <FaSignOutAlt cursor={"pointer"} onClick={onLogout} />
           </div>
           <div
             style={{
