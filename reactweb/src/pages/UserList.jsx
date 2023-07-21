@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 const UserList = () => {
@@ -79,6 +79,7 @@ const UserList = () => {
             pagination: { paginationModel: { pageSize: 10 } },
           }}
           pageSizeOptions={[10, 25, 50, 100]}
+          slots={{ toolbar: GridToolbar }}
         />
       </div>
     </>

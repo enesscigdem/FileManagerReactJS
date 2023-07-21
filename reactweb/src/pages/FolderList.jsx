@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 const FolderList = () => {
@@ -84,8 +84,18 @@ const FolderList = () => {
           }
         `}
       </style>
-      <div style={{ height: 600, width: "100%" }}>
-        <DataGrid rows={folders} columns={columns} />
+      <div style={{ height: 620, width: "100%" }}>
+        <DataGrid
+          slots={{ toolbar: GridToolbar }}
+          rows={folders}
+          columns={columns}
+          {...folders}
+          initialState={{
+            ...folders.initialState,
+            pagination: { paginationModel: { pageSize: 10 } },
+          }}
+          pageSizeOptions={[10, 25, 50, 100]}
+        />
       </div>
     </>
   );
