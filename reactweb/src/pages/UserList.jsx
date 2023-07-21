@@ -25,7 +25,7 @@ const UserList = () => {
   const columns = [
     {
       field: "userID",
-      headerName: "UserID",
+      headerName: "User ID",
       width: 150,
       headerClassName: "boldHeader",
     },

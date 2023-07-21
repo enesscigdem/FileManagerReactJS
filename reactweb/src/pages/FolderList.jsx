@@ -27,31 +27,31 @@ const FolderList = () => {
   const columns = [
     {
       field: "folderID",
-      headerName: "folderID",
+      headerName: "Folder ID",
       width: 150,
       headerClassName: "boldHeader",
     },
     {
       field: "folderName",
-      headerName: "folderName",
+      headerName: "Folder Name",
       width: 300,
       headerClassName: "boldHeader",
     },
     {
       field: "folderPath",
-      headerName: "folderPath",
+      headerName: "Folder Path",
       width: 600,
       headerClassName: "boldHeader",
     },
     {
       field: "folderCreatedDate",
-      headerName: "folderCreatedDate",
+      headerName: "Created Date",
       width: 250,
       headerClassName: "boldHeader",
     },
     {
       field: "userID",
-      headerName: "userID",
+      headerName: "User ID",
       width: 150,
       headerClassName: "boldHeader",
     },
