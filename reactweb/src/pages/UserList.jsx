@@ -80,6 +80,12 @@ const UserList = () => {
           }}
           pageSizeOptions={[10, 25, 50, 100]}
           slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
         />
       </div>
     </>

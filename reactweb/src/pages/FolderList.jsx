@@ -86,6 +86,12 @@ const FolderList = () => {
       </style>
       <div style={{ height: 620, width: "100%" }}>
         <DataGrid
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
           slots={{ toolbar: GridToolbar }}
           rows={folders}
           columns={columns}
