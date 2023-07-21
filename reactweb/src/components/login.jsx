@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import UserTable from "./UserTable";
 import "./login.css";
+import Dashboard from "../pages/Dashboard";
 
 function Login({ onLoginSuccess }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -28,6 +28,7 @@ function Login({ onLoginSuccess }) {
       setLoginError("Kullanıcı adı veya şifre hatalı!");
     }
   };
+
   const renderForm = (
     <>
       <div className="app-login">
@@ -40,6 +41,7 @@ function Login({ onLoginSuccess }) {
                 <input
                   type="text"
                   value={username}
+                  placeholder="exampleuser123"
                   required
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -49,6 +51,7 @@ function Login({ onLoginSuccess }) {
                 <input
                   type="password"
                   value={password}
+                  placeholder="*******"
                   required
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -64,7 +67,7 @@ function Login({ onLoginSuccess }) {
     </>
   );
 
-  return <> {isSubmitted ? <UserTable /> : renderForm}</>;
+  return <> {isSubmitted ? <Dashboard /> : renderForm}</>;
 }
 
 export default Login;
