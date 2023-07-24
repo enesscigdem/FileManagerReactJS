@@ -1,3 +1,4 @@
+import { Margin } from "@mui/icons-material";
 import React, { useState } from "react";
 import {
   FaTh,
@@ -17,14 +18,19 @@ import {
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
-const Sidebar = ({ children, onLogout }) => {
+const Sidebar = ({ children, onLogout, userID }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
   const menuItem = [
     {
-      path: "/",
-      name: "Folder List",
+      path: "/myFolders",
+      name: "My Folders",
       icon: <FaFolderOpen />,
+    },
+    {
+      path: "/",
+      name: "All Folder List",
+      icon: <FaRegFolder />,
     },
     {
       path: "/userlist",
@@ -36,11 +42,7 @@ const Sidebar = ({ children, onLogout }) => {
       name: "Analytics",
       icon: <FaRegChartBar />,
     },
-    {
-      path: "/comment",
-      name: "Comment",
-      icon: <FaCommentAlt />,
-    },
+
     {
       path: "/product",
       name: "Product",
@@ -58,6 +60,17 @@ const Sidebar = ({ children, onLogout }) => {
       <div style={{ width: isOpen ? "300px" : "50px" }} className="sidebar">
         <div className="top_section">
           <h1 style={{ display: isOpen ? "block" : "none" }} className="logo">
+            <p
+              style={{
+                fontSize: "14px",
+                textAlign: "center",
+                color: "Highlight",
+                fontFamily: "sans-serif",
+                marginBottom: "10px",
+              }}
+            >
+              Hoşgeldiniz,{userID}
+            </p>
             <img
               src="https://www.fileorbis.com/assets/images/logo.svg"
               alt=""

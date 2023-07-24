@@ -21,9 +21,10 @@ function Login({ onLoginSuccess }) {
           password: password,
         }
       );
+      console.log(response.data);
       setLoginError("Giriş Başarılı");
       setIsSubmitted(true);
-      onLoginSuccess();
+      onLoginSuccess(username); // Pass the userID to onLoginSuccess function
     } catch (error) {
       setLoginError("Kullanıcı adı veya şifre hatalı!");
     }
