@@ -103,7 +103,6 @@ const useFetchFolders = (userID) => {
   const [folders, setFolders] = useState([]);
 
   useEffect(() => {
-    debugger;
     axios
       .get(`https://localhost:7104/api/Folder/GetFoldersByUserID/${userID}`)
       .then((response) => {
@@ -124,7 +123,6 @@ const useFetchFolders = (userID) => {
 };
 const useFetchFiles = (folderID) => {
   const [files, setFiles] = useState([]);
-
   useEffect(() => {
     axios
       .get(`https://localhost:7104/api/File/GetFilesByFolderID/${folderID}`)
@@ -144,10 +142,9 @@ const useFetchFiles = (folderID) => {
 
   return files;
 };
-
-const FolderGrid = ({ folders, handleRowClick }) => {
+const ButtonsComponent = ({ type }) => {
   return (
-    <div>
+    <>
       <Stack
         marginTop={2}
         marginBottom={2}
@@ -165,6 +162,18 @@ const FolderGrid = ({ folders, handleRowClick }) => {
         <Button size="small" color="warning" variant="contained">
           Klasör Yükle
         </Button>
+        {type === "folder" ? (
+          <></>
+        ) : (
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            onClick={() => window.location.reload()}
+          >
+            Ana Sayfa
+          </Button>
+        )}
       </Stack>
       <style>
         {`
@@ -173,6 +182,14 @@ const FolderGrid = ({ folders, handleRowClick }) => {
           }
         `}
       </style>
+    </>
+  );
+};
+
+const FolderGrid = ({ folders, handleRowClick }) => {
+  return (
+    <div>
+      <ButtonsComponent type="folder" />
       <div style={{ height: 620, width: "100%" }}>
         <DataGrid
           slotProps={{
@@ -202,30 +219,7 @@ const FileGrid = ({ folderName, rows, folderID }) => {
     <div>
       <h3>{folderName} Klasörü </h3>
       <h3>Klasör ID : {folderID}</h3>
-      <Stack
-        marginTop={2}
-        marginBottom={2}
-        spacing={2}
-        height={60}
-        direction="row"
-        alignItems="center"
-      >
-        <Button
-          size="small"
-          color="primary"
-          variant="contained"
-          onClick={() => window.location.reload()}
-        >
-          Ana Sayfa
-        </Button>
-      </Stack>
-      <style>
-        {`
-          .boldHeader .MuiDataGrid-columnHeaderTitle {
-            font-weight: bold;
-          }
-        `}
-      </style>
+      <ButtonsComponent type="file" />
       <div style={{ height: 560, width: "100%" }}>
         <DataGrid
           slotProps={{
