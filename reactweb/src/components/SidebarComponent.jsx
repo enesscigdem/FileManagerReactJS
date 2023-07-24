@@ -15,7 +15,7 @@ function SidebarComponent({ onLogout, userID }) {
       <Routes>
         <Route path="/" element={<FolderList />} />
         <Route path="/userlist" element={<UserList />} />
-        <Route path="/myFolders" element={<MyFolders />} />
+        <Route path="/myFolders" element={<MyFolders userID={userID} />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/product" element={<Product />} />
         <Route path="/productList" element={<ProductList />} />
