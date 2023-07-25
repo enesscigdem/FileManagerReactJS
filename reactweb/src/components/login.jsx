@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -12,13 +13,18 @@ import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link as RouterLink,
+} from "react-router-dom";
+import ForgotPassword from "./ForgotPassword.jsx";
 
-import axios from "axios";
-import ForgotPass from "./ForgotPassword.jsx";
-const defaultTheme = createTheme();
+const Login = ({ onLoginSuccess }) => {
+  const defaultTheme = createTheme();
 
-function Login({ onLoginSuccess }) {
+  const [isForgetPass, setIsForgetPass] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -46,20 +52,7 @@ function Login({ onLoginSuccess }) {
   };
 
   return (
-    <>
-      <Routes>
-        <Route
-          path="/forgotpass"
-          element={
-            <>
-              <ForgotPass />
-              <Link component={RouterLink} to="/" variant="body2">
-                Go back to Login
-              </Link>
-            </>
-          }
-        />
-      </Routes>
+    <div>
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
@@ -123,11 +116,9 @@ function Login({ onLoginSuccess }) {
                   </Button>
                   <Grid container>
                     <Grid item xs>
-                      <Link
-                        component={RouterLink}
-                        to="/forgotpass"
-                        variant="body2"
-                      ></Link>
+                      <Link href="/forgot-password" variant="body2">
+                        {"Forgot Password"}
+                      </Link>
                     </Grid>
                     <Grid item>
                       <Link href="#" variant="body2">
@@ -142,8 +133,8 @@ function Login({ onLoginSuccess }) {
           </Box>
         </Container>
       </ThemeProvider>
-    </>
+    </div>
   );
-}
+};
 
 export default Login;

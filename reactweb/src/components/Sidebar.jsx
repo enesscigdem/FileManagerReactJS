@@ -28,7 +28,7 @@ const Sidebar = ({ children, onLogout, userID, token }) => {
       icon: <FaFolderOpen />,
     },
     {
-      path: "/",
+      path: "/allfolders",
       name: "All Folder List",
       icon: <FaRegFolder />,
     },

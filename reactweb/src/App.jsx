@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login2 from "./components/Login";
+import Login from "./components/Login";
 import ForgotPassword from "./components/ForgotPassword";
 import SidebarComponent from "./components/SidebarComponent";
 
@@ -37,18 +37,27 @@ const App = () => {
   return (
     <BrowserRouter>
       <div>
-        {isLoggedIn ? (
+        {isLoggedIn && (
           <SidebarComponent
             onLogout={handleLogout}
             userID={userID}
             token={token}
           />
-        ) : (
-          <Login2 onLoginSuccess={handleLoginSuccess} />
         )}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Login
+                onLoginSuccess={handleLoginSuccess}
+                isLoggedIn={isLoggedIn}
+              />
+            }
+          />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        </Routes>
       </div>
     </BrowserRouter>
   );
 };
-
 export default App;
