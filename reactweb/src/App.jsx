@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./components/login";
+import Login2 from "./components/Login";
+import ForgotPassword from "./components/ForgotPassword";
 import SidebarComponent from "./components/SidebarComponent";
 
 const App = () => {
@@ -43,7 +44,7 @@ const App = () => {
             token={token}
           />
         ) : (
-          <Login onLoginSuccess={handleLoginSuccess} />
+          <Login2 onLoginSuccess={handleLoginSuccess} />
         )}
       </div>
     </BrowserRouter>

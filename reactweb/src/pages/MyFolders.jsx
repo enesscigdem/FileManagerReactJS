@@ -235,6 +235,9 @@ const FolderGrid = ({ folders, handleRowClick }) => {
 };
 
 const FileGrid = ({ folderName, rows, folderID }) => {
+  if (!folderID || !folderName) {
+    return null;
+  }
   return (
     <div>
       <h3>{folderName} Klasörü </h3>

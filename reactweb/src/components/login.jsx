@@ -1,7 +1,22 @@
 import React, { useState } from "react";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Route, Routes } from "react-router-dom";
+
 import axios from "axios";
-import "./login.css";
-import Dashboard from "../pages/FolderList";
+import ForgotPass from "./ForgotPassword.jsx";
+const defaultTheme = createTheme();
 
 function Login({ onLoginSuccess }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -30,45 +45,105 @@ function Login({ onLoginSuccess }) {
     }
   };
 
-  const renderForm = (
+  return (
     <>
-      <div className="app-login">
-        <div className="login-form">
-          <div className="title">File Orbis</div>
-          <div className="form">
-            <form onSubmit={handleLogin}>
-              <div className="input-container">
-                <label>Username </label>
-                <input
-                  type="text"
-                  value={username}
-                  placeholder="exampleuser123"
-                  required
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-              <div className="input-container">
-                <label>Password </label>
-                <input
-                  type="password"
-                  value={password}
-                  placeholder="*******"
-                  required
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <div className="button-container">
-                <input type="submit" value="Login" />
-              </div>
-            </form>
-            {loginError && <p style={{ color: "red" }}>{loginError}</p>}
-          </div>
-        </div>
-      </div>
+      <Routes>
+        <Route
+          path="/forgotpass"
+          element={
+            <>
+              <ForgotPass />
+              <Link component={RouterLink} to="/" variant="body2">
+                Go back to Login
+              </Link>
+            </>
+          }
+        />
+      </Routes>
+      <ThemeProvider theme={defaultTheme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 8,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Card sx={{ minWidth: 500, marginTop: 8 }}>
+              <CardContent>
+                <Typography sx={{ marginRight: 5, textAlign: "center" }}>
+                  <img
+                    src="https://www.fileorbis.com/assets/images/logo.svg"
+                    alt="Logo"
+                  />
+                </Typography>
+                <Box
+                  component="form"
+                  onSubmit={handleLogin}
+                  noValidate
+                  sx={{ mt: 1 }}
+                >
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    autoComplete="username"
+                    autoFocus
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <FormControlLabel
+                    control={<Checkbox value="remember" color="primary" />}
+                    label="Remember me"
+                  />
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Sign In
+                  </Button>
+                  <Grid container>
+                    <Grid item xs>
+                      <Link
+                        component={RouterLink}
+                        to="/forgotpass"
+                        variant="body2"
+                      ></Link>
+                    </Grid>
+                    <Grid item>
+                      <Link href="#" variant="body2">
+                        {"Don't have an account? Sign Up"}
+                      </Link>
+                    </Grid>
+                  </Grid>
+                </Box>
+                {loginError && <p style={{ color: "red" }}>{loginError}</p>}
+              </CardContent>
+            </Card>
+          </Box>
+        </Container>
+      </ThemeProvider>
     </>
   );
-
-  return <> {isSubmitted ? <Dashboard /> : renderForm}</>;
 }
 
 export default Login;

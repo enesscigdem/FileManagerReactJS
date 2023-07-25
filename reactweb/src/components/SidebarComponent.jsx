@@ -6,15 +6,21 @@ import MyFolders from "../pages/MyFolders.jsx";
 import Product from "../pages/Product.jsx";
 import ProductList from "../pages/ProductList.jsx";
 import "./sidebarcomponent.css";
-import UserList from "../pages/UserList.jsx";
-import FolderList from "../pages/FolderList.jsx";
+// import UserList from "../pages/UserList.jsx";
+// import FolderList from "../pages/FolderList.jsx";
 
 function SidebarComponent({ onLogout, userID, token }) {
   return (
     <Sidebar onLogout={onLogout} userID={userID} token={token}>
       <Routes>
-        <Route path="/" element={<FolderList token={token} />} />
-        <Route path="/userlist" element={<UserList token={token} />} />
+        {/* <Route
+          path="/"
+          element={<FolderList userID={userID} token={token} />}
+        /> */}
+        {/* <Route
+          path="/userlist"
+          element={<UserList userID={userID} token={token} />}
+        /> */}
         <Route
           path="/myFolders"
           element={<MyFolders userID={userID} token={token} />}
