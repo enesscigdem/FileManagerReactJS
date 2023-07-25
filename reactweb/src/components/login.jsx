@@ -24,7 +24,7 @@ function Login({ onLoginSuccess }) {
       console.log(response.data);
       setLoginError("Giriş Başarılı");
       setIsSubmitted(true);
-      onLoginSuccess(response.data.userID);
+      onLoginSuccess(response.data.userID, response.data.token);
     } catch (error) {
       setLoginError("Kullanıcı adı veya şifre hatalı!");
     }

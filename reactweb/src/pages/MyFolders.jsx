@@ -99,33 +99,53 @@ const columnsFile = [
     headerClassName: "boldHeader",
   },
 ];
-const useFetchFolders = (userID) => {
+
+const useFetchFolders = (userID, token) => {
   const [folders, setFolders] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(`https://localhost:7104/api/Folder/GetFoldersByUserID/${userID}`)
-      .then((response) => {
+    const fetchFolders = async () => {
+      try {
+        const config = {
+          headers: { Authorization: `Bearer ${token}` },
+        };
+
+        const response = await axios.get(
+          `https://localhost:7104/api/Folder/GetFoldersByUserID/${userID}`,
+          config
+        );
+
         const foldersWithIds = response.data.map((folder) => ({
           ...folder,
           id: folder.folderID,
           name: folder.folderName,
           type: "folder",
         }));
+
         setFolders(foldersWithIds);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching folders:", error);
-      });
-  }, [userID]);
+      }
+    };
+
+    if (userID && token) {
+      fetchFolders();
+    }
+  }, [userID, token]);
 
   return folders;
 };
-const useFetchFiles = (folderID) => {
+const useFetchFiles = (folderID, token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
   const [files, setFiles] = useState([]);
   useEffect(() => {
     axios
-      .get(`https://localhost:7104/api/File/GetFilesByFolderID/${folderID}`)
+      .get(
+        `https://localhost:7104/api/File/GetFilesByFolderID/${folderID}`,
+        config
+      )
       .then((response) => {
         const filesWithIds = response.data.map((file) => ({
           ...file,
@@ -244,11 +264,10 @@ const FileGrid = ({ folderName, rows, folderID }) => {
   );
 };
 
-const MyFolders = ({ userID }) => {
+const MyFolders = ({ userID, token }) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
-  const folders = useFetchFolders(userID);
-  const files = useFetchFiles(selectedFolder?.folderID);
-
+  const folders = useFetchFolders(userID, token);
+  const files = useFetchFiles(selectedFolder?.folderID, token);
   const handleRowClick = (params) => {
     const folderId = params.id;
     const folder = folders.find((folder) => folder.id === folderId);

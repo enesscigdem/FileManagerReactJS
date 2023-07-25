@@ -9,13 +9,16 @@ import "./sidebarcomponent.css";
 import UserList from "../pages/UserList.jsx";
 import FolderList from "../pages/FolderList.jsx";
 
-function SidebarComponent({ onLogout, userID }) {
+function SidebarComponent({ onLogout, userID, token }) {
   return (
-    <Sidebar onLogout={onLogout} userID={userID}>
+    <Sidebar onLogout={onLogout} userID={userID} token={token}>
       <Routes>
-        <Route path="/" element={<FolderList />} />
-        <Route path="/userlist" element={<UserList />} />
-        <Route path="/myFolders" element={<MyFolders userID={userID} />} />
+        <Route path="/" element={<FolderList token={token} />} />
+        <Route path="/userlist" element={<UserList token={token} />} />
+        <Route
+          path="/myFolders"
+          element={<MyFolders userID={userID} token={token} />}
+        />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/product" element={<Product />} />
         <Route path="/productList" element={<ProductList />} />
