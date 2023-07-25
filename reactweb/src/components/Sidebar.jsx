@@ -102,7 +102,13 @@ const Sidebar = ({ children, onLogout, userID, token }) => {
           ))}
           <div className="link" activeClassName="active">
             <div className="icon">
-              <FaSignOutAlt cursor={"pointer"} onClick={onLogout} />
+              <FaSignOutAlt
+                cursor={"pointer"}
+                onClick={() => {
+                  onLogout();
+                  window.location.href = "/";
+                }}
+              />
             </div>
             <div
               style={{
@@ -110,7 +116,10 @@ const Sidebar = ({ children, onLogout, userID, token }) => {
                 cursor: "pointer",
                 fontSize: "20px",
               }}
-              onClick={onLogout}
+              onClick={() => {
+                onLogout();
+                window.location.href = "/";
+              }}
             >
               Çıkış Yap
             </div>

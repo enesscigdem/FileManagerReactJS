@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import ForgotPassword from "./components/ForgotPassword";
 import SidebarComponent from "./components/SidebarComponent";
+import MyFolders from "./pages/MyFolders.jsx";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,16 +46,26 @@ const App = () => {
           />
         )}
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Login
-                onLoginSuccess={handleLoginSuccess}
-                isLoggedIn={isLoggedIn}
-              />
-            }
-          />
+          {isLoggedIn ? (
+            <Route path="/" element={<Navigate to="/myFolders" />} />
+          ) : (
+            <Route
+              path="/"
+              element={
+                <Login
+                  onLoginSuccess={handleLoginSuccess}
+                  isLoggedIn={isLoggedIn}
+                />
+              }
+            />
+          )}
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          {isLoggedIn && (
+            <Route
+              path="/myFolders"
+              element={<MyFolders userID={userID} token={token} />}
+            />
+          )}
         </Routes>
       </div>
     </BrowserRouter>

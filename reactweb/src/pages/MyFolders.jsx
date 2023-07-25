@@ -141,24 +141,29 @@ const useFetchFiles = (folderID, token) => {
   };
   const [files, setFiles] = useState([]);
   useEffect(() => {
-    axios
-      .get(
-        `https://localhost:7104/api/File/GetFilesByFolderID/${folderID}`,
-        config
-      )
-      .then((response) => {
-        const filesWithIds = response.data.map((file) => ({
-          ...file,
-          id: file.fileID,
-          name: file.fileName,
-          type: "file",
-        }));
-        setFiles(filesWithIds);
-      })
-      .catch((error) => {
-        console.error("Error fetching files:", error);
-      });
-  }, [folderID]);
+    if (folderID) {
+      axios
+        .get(
+          `https://localhost:7104/api/File/GetFilesByFolderID/${folderID}`,
+          config
+        )
+        .then((response) => {
+          const filesWithIds = response.data.map((file) => ({
+            ...file,
+            id: file.fileID,
+            name: file.fileName,
+            type: "file",
+          }));
+          setFiles(filesWithIds);
+        })
+        .catch((error) => {
+          console.error("Error fetching files:", error);
+        });
+    } else {
+      // If folderID is null or undefined, reset the files state to an empty array.
+      setFiles([]);
+    }
+  }, [folderID, token]);
 
   return files;
 };
@@ -266,11 +271,17 @@ const FileGrid = ({ folderName, rows, folderID }) => {
     </div>
   );
 };
-
 const MyFolders = ({ userID, token }) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
   const folders = useFetchFolders(userID, token);
   const files = useFetchFiles(selectedFolder?.folderID, token);
+
+  useEffect(() => {
+    if (!folders.length && userID && token) {
+      // Fetch the folders here or you can do it in a separate function.
+    }
+  }, [folders.length, userID, token]);
+
   const handleRowClick = (params) => {
     const folderId = params.id;
     const folder = folders.find((folder) => folder.id === folderId);
@@ -291,5 +302,4 @@ const MyFolders = ({ userID, token }) => {
     </div>
   );
 };
-
 export default MyFolders;
