@@ -53,12 +53,6 @@ const columns = [
 
 const columnsFile = [
   {
-    field: "fileID",
-    headerName: "File ID",
-    width: 150,
-    headerClassName: "boldHeader",
-  },
-  {
     field: "name",
     headerName: "File Name",
     width: 350,
@@ -95,6 +89,12 @@ const columnsFile = [
   {
     field: "folderID",
     headerName: "Folder ID",
+    width: 150,
+    headerClassName: "boldHeader",
+  },
+  {
+    field: "fileID",
+    headerName: "File ID",
     width: 150,
     headerClassName: "boldHeader",
   },
@@ -243,9 +243,10 @@ const ButtonsComponent = ({ type }) => {
   );
 };
 
-const FolderGrid = ({ folders, handleRowClick }) => {
+const FolderGrid = ({ folders, handleRowClick, currentPath }) => {
   return (
     <div>
+      {<h3>{currentPath}</h3>}
       <ButtonsComponent type="folder" />
       <div style={{ height: 620, width: "100%" }}>
         <DataGrid
@@ -271,14 +272,19 @@ const FolderGrid = ({ folders, handleRowClick }) => {
   );
 };
 
-const FileGrid = ({ folderName, rows, folderID, handleRowClick }) => {
+const FileGrid = ({
+  folderName,
+  rows,
+  folderID,
+  handleRowClick,
+  currentPath,
+}) => {
   if (!folderID || !folderName) {
     return null;
   }
   return (
     <div>
-      <h3>{folderName} Klasörü </h3>
-      <h3>Klasör ID : {folderID}</h3>
+      {folderName && <h3>{currentPath}</h3>}
       <ButtonsComponent type="file" />
       <div style={{ height: 560, width: "100%" }}>
         <DataGrid
@@ -309,6 +315,7 @@ const MyFolders = ({ userID, token }) => {
   const folders = useFetchFolders(userID, token);
   const subFolders = useFetchSubFolders(selectedFolder?.folderID, token);
   const files = useFetchFiles(selectedFolder?.folderID, token);
+  const [folderPath, setFolderPath] = useState([]);
 
   useEffect(() => {
     // Check if the page has not been loaded before
@@ -324,7 +331,13 @@ const MyFolders = ({ userID, token }) => {
     const folderId = params.id;
     const folder = folders.find((folder) => folder.id === folderId);
     if (folder) {
-      setSelectedFolder(folder);
+      setSelectedFolder((prevSelectedFolder) => {
+        setFolderPath((prevPath) => [
+          ...prevPath,
+          prevSelectedFolder?.folderName || "",
+        ]);
+        return folder;
+      });
     } else {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
@@ -343,11 +356,22 @@ const MyFolders = ({ userID, token }) => {
           type: "folder",
         };
 
-        setSelectedFolder(subfolder);
+        setSelectedFolder((prevSelectedFolder) => {
+          setFolderPath((prevPath) => [
+            ...prevPath,
+            prevSelectedFolder?.folderName || "",
+          ]);
+          return subfolder;
+        });
       } catch (error) {
         console.error("Error fetching subfolder:", error);
       }
     }
+  };
+  const handleBackClick = () => {
+    if (folderPath.length === 0) return;
+    setFolderPath((prevPath) => prevPath.slice(0, -1));
+    setSelectedFolder(null);
   };
   return (
     <div>
@@ -358,18 +382,23 @@ const MyFolders = ({ userID, token }) => {
             folderName={selectedFolder.folderName}
             rows={[...subFolders, ...files]}
             handleRowClick={handleRowClick}
+            currentPath={folderPath.join(" -> ")}
           />
           <Button
             size="small"
             color="primary"
             variant="contained"
-            onClick={() => setSelectedFolder(null)}
+            onClick={handleBackClick}
           >
             Back
           </Button>
         </>
       ) : (
-        <FolderGrid folders={folders} handleRowClick={handleRowClick} />
+        <FolderGrid
+          folders={folders}
+          handleRowClick={handleRowClick}
+          currentPath={folderPath.join(" -> ")}
+        />
       )}
     </div>
   );
