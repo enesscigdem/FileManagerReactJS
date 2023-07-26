@@ -167,6 +167,38 @@ const useFetchFiles = (folderID, token) => {
 
   return files;
 };
+const useFetchSubFolders = (folderID, token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const [subFolders, setSubFolders] = useState([]);
+
+  useEffect(() => {
+    if (folderID) {
+      axios
+        .get(
+          `https://localhost:7104/api/Folder/GetFoldersByParentFolderID/${folderID}`,
+          config
+        )
+        .then((response) => {
+          const subFoldersWithIds = response.data.map((folder) => ({
+            ...folder,
+            id: folder.folderID,
+            name: folder.folderName,
+            type: "folder",
+          }));
+          setSubFolders(subFoldersWithIds);
+        })
+        .catch((error) => {
+          console.error("Error fetching subfolders:", error);
+        });
+    } else {
+      setSubFolders([]);
+    }
+  }, [folderID, token]);
+
+  return subFolders;
+};
 const ButtonsComponent = ({ type }) => {
   return (
     <>
@@ -274,6 +306,7 @@ const FileGrid = ({ folderName, rows, folderID }) => {
 const MyFolders = ({ userID, token }) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
   const folders = useFetchFolders(userID, token);
+  const subFolders = useFetchSubFolders(selectedFolder?.folderID, token);
   const files = useFetchFiles(selectedFolder?.folderID, token);
 
   useEffect(() => {
@@ -286,23 +319,58 @@ const MyFolders = ({ userID, token }) => {
     }
   }, []);
 
-  const handleRowClick = (params) => {
+  const handleRowClick = async (params) => {
     const folderId = params.id;
     const folder = folders.find((folder) => folder.id === folderId);
-    setSelectedFolder(folder);
+    if (folder) {
+      setSelectedFolder(folder);
+    } else {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+
+      try {
+        const response = await axios.get(
+          `https://localhost:7104/api/Folder/GetFolderByID/${folderId}`,
+          config
+        );
+
+        const subfolder = {
+          ...response.data,
+          id: response.data.folderID,
+          name: response.data.folderName,
+          type: "folder",
+        };
+
+        setSelectedFolder(subfolder);
+      } catch (error) {
+        console.error("Error fetching subfolder:", error);
+      }
+    }
   };
   return (
     <div>
       {selectedFolder ? (
-        <FileGrid
-          folderID={selectedFolder.folderID}
-          folderName={selectedFolder.folderName}
-          rows={files}
-        />
+        <>
+          <FileGrid
+            folderID={selectedFolder.folderID}
+            folderName={selectedFolder.folderName}
+            rows={[...subFolders, ...files]}
+          />
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            onClick={() => setSelectedFolder(null)}
+          >
+            Back
+          </Button>
+        </>
       ) : (
         <FolderGrid folders={folders} handleRowClick={handleRowClick} />
       )}
     </div>
   );
 };
+
 export default MyFolders;
