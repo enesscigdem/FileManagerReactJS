@@ -128,7 +128,7 @@ const useFetchFolders = (userID, token) => {
       }
     };
 
-    if (userID && token) {
+    if (userID) {
       fetchFolders();
     }
   }, [userID, token]);
@@ -277,17 +277,20 @@ const MyFolders = ({ userID, token }) => {
   const files = useFetchFiles(selectedFolder?.folderID, token);
 
   useEffect(() => {
-    if (!folders.length && userID && token) {
-      // Fetch the folders here or you can do it in a separate function.
+    // Check if the page has not been loaded before
+    const hasPageLoaded = localStorage.getItem("hasPageLoaded");
+
+    if (!hasPageLoaded) {
+      localStorage.setItem("hasPageLoaded", true);
+      window.location.reload();
     }
-  }, [folders.length, userID, token]);
+  }, []);
 
   const handleRowClick = (params) => {
     const folderId = params.id;
     const folder = folders.find((folder) => folder.id === folderId);
     setSelectedFolder(folder);
   };
-
   return (
     <div>
       {selectedFolder ? (

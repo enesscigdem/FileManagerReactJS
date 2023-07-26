@@ -20,10 +20,8 @@ import {
   Link as RouterLink,
 } from "react-router-dom";
 import ForgotPassword from "./ForgotPassword.jsx";
-
 const Login = ({ onLoginSuccess }) => {
   const defaultTheme = createTheme();
-
   const [isForgetPass, setIsForgetPass] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [username, setUsername] = useState("");
@@ -101,10 +99,6 @@ const Login = ({ onLoginSuccess }) => {
                     autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
                   />
                   <Button
                     type="submit"

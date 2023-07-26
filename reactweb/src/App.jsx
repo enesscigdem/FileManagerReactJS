@@ -33,6 +33,7 @@ const App = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userID");
     localStorage.removeItem("token");
+    localStorage.removeItem("hasPageLoaded");
   };
 
   return (
@@ -47,7 +48,12 @@ const App = () => {
         )}
         <Routes>
           {isLoggedIn ? (
-            <Route path="/" element={<Navigate to="/myFolders" />} />
+            <Route
+              path="/"
+              element={
+                <Navigate to="/myFolders" token={token} userID={userID} />
+              }
+            />
           ) : (
             <Route
               path="/"
@@ -60,12 +66,6 @@ const App = () => {
             />
           )}
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          {isLoggedIn && (
-            <Route
-              path="/myFolders"
-              element={<MyFolders userID={userID} token={token} />}
-            />
-          )}
         </Routes>
       </div>
     </BrowserRouter>

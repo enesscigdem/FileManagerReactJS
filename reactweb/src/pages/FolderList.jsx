@@ -5,31 +5,27 @@
 // import Button from "@mui/material/Button";
 // const FolderList = ({ userID, token }) => {
 //   const [folders, setFolders] = useState([]);
-//   if (userID === 1) {
-//     const config = {
-//       headers: { Authorization: `Bearer ${token}` },
+//   const config = {
+//     headers: { Authorization: `Bearer ${token}` },
+//   };
+//   useEffect(() => {
+//     const fetchFolders = async () => {
+//       try {
+//         const response = await axios.get(
+//           "https://localhost:7104/api/Folder/GetAllFolders",
+//           config
+//         );
+//         const folderWithIds = response.data.map((folder) => ({
+//           ...folder,
+//           id: folder.folderID,
+//         }));
+//         setFolders(folderWithIds);
+//       } catch (error) {
+//         console.error("Error fetching folders : ", error);
+//       }
 //     };
-//     useEffect(() => {
-//       const fetchFolders = async () => {
-//         try {
-//           const response = await axios.get(
-//             "https://localhost:7104/api/Folder/GetAllFolders",
-//             config
-//           );
-//           const folderWithIds = response.data.map((folder) => ({
-//             ...folder,
-//             id: folder.folderID,
-//           }));
-//           setFolders(folderWithIds);
-//         } catch (error) {
-//           console.error("Error fetching folders : ", error);
-//         }
-//       };
-//       fetchFolders();
-//     }, []);
-//   } else {
-//     <h2>Bu sayfayı görme yetkiniz yok!</h2>;
-//   }
+//     fetchFolders();
+//   }, []);
 //   const columns = [
 //     {
 //       field: "folderID",

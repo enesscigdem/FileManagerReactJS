@@ -14,7 +14,7 @@ function SidebarComponent({ onLogout, userID, token }) {
     <Sidebar onLogout={onLogout} userID={userID} token={token}>
       <Routes>
         {/* <Route
-          path="/"
+          path="/allfolders"
           element={<FolderList userID={userID} token={token} />}
         /> */}
         {/* <Route
