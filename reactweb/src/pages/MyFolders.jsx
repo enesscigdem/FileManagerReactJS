@@ -271,7 +271,7 @@ const FolderGrid = ({ folders, handleRowClick }) => {
   );
 };
 
-const FileGrid = ({ folderName, rows, folderID }) => {
+const FileGrid = ({ folderName, rows, folderID, handleRowClick }) => {
   if (!folderID || !folderName) {
     return null;
   }
@@ -298,6 +298,7 @@ const FileGrid = ({ folderName, rows, folderID }) => {
           }}
           pageSizeOptions={[10, 25, 50, 100]}
           pageSize={5}
+          onRowClick={handleRowClick}
         />
       </div>
     </div>
@@ -356,6 +357,7 @@ const MyFolders = ({ userID, token }) => {
             folderID={selectedFolder.folderID}
             folderName={selectedFolder.folderName}
             rows={[...subFolders, ...files]}
+            handleRowClick={handleRowClick}
           />
           <Button
             size="small"
