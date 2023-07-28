@@ -1,33 +1,17 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import Analytics from "../pages/Analytics.jsx";
 import MyFolders from "../pages/MyFolders.jsx";
-import Product from "../pages/Product.jsx";
-import ProductList from "../pages/ProductList.jsx";
-import "./sidebarcomponent.css";
-// import UserList from "../pages/UserList.jsx";
-// import FolderList from "../pages/FolderList.jsx";
+import "../styles/sidebarcomponent.css";
 
 function SidebarComponent({ onLogout, userID, token }) {
   return (
     <Sidebar onLogout={onLogout} userID={userID} token={token}>
       <Routes>
-        {/* <Route
-          path="/allfolders"
-          element={<FolderList userID={userID} token={token} />}
-        /> */}
-        {/* <Route
-          path="/userlist"
-          element={<UserList userID={userID} token={token} />}
-        /> */}
         <Route
           path="/myFolders"
           element={<MyFolders userID={userID} token={token} />}
         />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/product" element={<Product />} />
-        <Route path="/productList" element={<ProductList />} />
       </Routes>
     </Sidebar>
   );

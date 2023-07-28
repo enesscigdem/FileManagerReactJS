@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import ForgotPassword from "./components/ForgotPassword";
 import SidebarComponent from "./components/SidebarComponent";
-import MyFolders from "./pages/MyFolders.jsx";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

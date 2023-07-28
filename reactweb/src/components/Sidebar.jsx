@@ -1,21 +1,5 @@
-import { Margin } from "@mui/icons-material";
 import React, { useState } from "react";
-import {
-  FaTh,
-  FaBars,
-  FaUserAlt,
-  FaRegChartBar,
-  FaCommentAlt,
-  FaShoppingBag,
-  FaThList,
-  FaSignOutAlt,
-  FaList,
-  FaUserCircle,
-  FaFolder,
-  FaFolderMinus,
-  FaFolderOpen,
-  FaRegFolder,
-} from "react-icons/fa";
+import { FaBars, FaSignOutAlt, FaFolderOpen } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = ({ children, onLogout, userID, token }) => {
@@ -26,32 +10,6 @@ const Sidebar = ({ children, onLogout, userID, token }) => {
       path: "/myFolders",
       name: "My Folders",
       icon: <FaFolderOpen />,
-    },
-    {
-      path: "/allfolders",
-      name: "All Folder List",
-      icon: <FaRegFolder />,
-    },
-    {
-      path: "/userlist",
-      name: "User List",
-      icon: <FaUserCircle />,
-    },
-    {
-      path: "/analytics",
-      name: "Analytics",
-      icon: <FaRegChartBar />,
-    },
-
-    {
-      path: "/product",
-      name: "Product",
-      icon: <FaShoppingBag />,
-    },
-    {
-      path: "/productList",
-      name: "Product List",
-      icon: <FaThList />,
     },
   ];
 
@@ -89,7 +47,7 @@ const Sidebar = ({ children, onLogout, userID, token }) => {
               to={item.path}
               key={index}
               className="link"
-              activeClassName="active"
+              activeclassname="active"
             >
               <div className="icon">{item.icon}</div>
               <div
@@ -100,7 +58,7 @@ const Sidebar = ({ children, onLogout, userID, token }) => {
               </div>
             </NavLink>
           ))}
-          <div className="link" activeClassName="active">
+          <div className="link" activeclassname="active">
             <div className="icon">
               <FaSignOutAlt
                 cursor={"pointer"}
