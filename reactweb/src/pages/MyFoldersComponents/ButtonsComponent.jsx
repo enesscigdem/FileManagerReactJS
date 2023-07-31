@@ -6,11 +6,13 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Input from "@mui/material/Input";
 import handleCreateFolder from "./CreateFolder";
 import handleUploadFile from "./UploadFile";
+import { saveAs } from "file-saver";
 
 const ButtonsComponent = ({ type, userID, token, parentFolderID }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [file, setFile] = useState(null);
   const [filePath, setFilePath] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
   useEffect(() => {
     if (file) {
       handleUploadFileThis();
@@ -21,6 +23,7 @@ const ButtonsComponent = ({ type, userID, token, parentFolderID }) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
       setFilePath(e.target.value);
+      debugger;
     }
   };
 
@@ -30,6 +33,26 @@ const ButtonsComponent = ({ type, userID, token, parentFolderID }) => {
   const handleUploadFileThis = async () => {
     debugger;
     await handleUploadFile(file, token, parentFolderID, setSuccessMessage);
+  };
+  const handleDownloadFile = async () => {
+    debugger;
+    const fileId = 1250;
+    const url = `https://localhost:7104/api/File/DownloadFile/${fileId}`;
+    try {
+      const response = await axios.get(url, {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Dosya adını URL'den al
+      const fileName = url.split("/").pop();
+
+      saveAs(response.data, fileName);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
   };
 
   return (
@@ -84,6 +107,14 @@ const ButtonsComponent = ({ type, userID, token, parentFolderID }) => {
             Ana Sayfa
           </Button>
         )}
+        <Button
+          size="small"
+          color="info"
+          variant="contained"
+          onClick={handleDownloadFile}
+        >
+          Dosya İndir
+        </Button>
       </Stack>
       {successMessage && (
         <div style={{ color: "green", fontWeight: "bold" }}>

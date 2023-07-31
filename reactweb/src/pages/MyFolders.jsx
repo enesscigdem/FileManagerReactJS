@@ -115,6 +115,7 @@ const MyFolders = ({ userID, token }) => {
             parentFolderID={selectedFolder.folderID}
             handleEditCellChange={handleEditCellChange}
             successMessage={successMessage}
+            idd={folderIdforMenu}
           />
         </>
       ) : (
