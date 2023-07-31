@@ -1,16 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-debugger;
 const handleUploadFile = async (
   file,
-  fileName,
   token,
-  userID,
   parentFolderID,
-  setSuccessMessage,
-  size,
-  path
+  setSuccessMessage
 ) => {
   try {
     const formData = new FormData();
@@ -22,14 +17,13 @@ const handleUploadFile = async (
         "Content-Type": "multipart/form-data",
       },
     };
-
+    debugger;
     const response = await axios.post(
-      "https://localhost:7104/api/File/UploadFile",
+      `https://localhost:7104/api/File/UploadFile?folderID=${parentFolderID}`,
       formData,
       config
     );
-
-    if (response.data.success) {
+    if (response.status === 200) {
       setSuccessMessage("Dosya başarıyla yüklendi!");
     } else {
       setSuccessMessage("Dosya yükleme başarısız!");

@@ -14,7 +14,6 @@ const MyFolders = ({ userID, token }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [folderPath, setFolderPath] = useState([]);
   const [folderIdforMenu, setfolderIdForMenu] = useState();
-
   useEffect(() => {
     const hasPageLoaded = localStorage.getItem("hasPageLoaded");
 
@@ -65,6 +64,7 @@ const MyFolders = ({ userID, token }) => {
           ]);
           return subfolder;
         });
+        console.log(selectedFolder);
       } catch (error) {
         console.error("Error fetching subfolder:", error);
       }

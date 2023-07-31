@@ -29,16 +29,7 @@ const ButtonsComponent = ({ type, userID, token, parentFolderID }) => {
   };
   const handleUploadFileThis = async () => {
     debugger;
-    await handleUploadFile(
-      file,
-      file.name,
-      token,
-      userID,
-      parentFolderID,
-      setSuccessMessage,
-      file.size,
-      filePath
-    );
+    await handleUploadFile(file, token, parentFolderID, setSuccessMessage);
   };
 
   return (

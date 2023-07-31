@@ -11,30 +11,35 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const defaultTheme = createTheme();
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
-  const [isEmailSent, setIsEmailSent] = useState(false);
   const [resetPassError, setResetPassError] = useState(null);
 
   const resetPass = async (e) => {
     e.preventDefault();
     setResetPassError(null);
     try {
+      debugger;
       const response = await axios.post(
         "https://localhost:7104/api/User/ForgotPassword",
         {
           username: username,
           email: email,
+          resetToken: "",
+          NewPassword: "",
         }
       );
       console.log(response.data);
-      setResetPassError("Şifre sıfırlama başarılı");
+      setResetPassError(
+        `An email with instructions has been sent to ${email}. Click the link provided in the email to reset your password.`
+      );
     } catch (error) {
-      setResetPassError("Kullanıcı adı veya e-mail geçersiz.");
+      setResetPassError("The username or email is invalid.");
     }
   };
 
@@ -97,11 +102,6 @@ function ForgotPassword() {
                 >
                   SEND EMAIL
                 </Button>
-                {isEmailSent && (
-                  <Typography variant="body2" color="text.secondary">
-                    An email with instructions has been sent to {email}.
-                  </Typography>
-                )}
                 <Grid container>
                   <Grid item xs>
                     <Link href="/" variant="body2">

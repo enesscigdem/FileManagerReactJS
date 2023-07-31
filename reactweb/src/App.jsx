@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import ForgotPassword from "./components/ForgotPassword";
 import SidebarComponent from "./components/SidebarComponent";
+import ResetPassword from "./components/ResetPassword";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,6 +23,7 @@ const App = () => {
   const handleLoginSuccess = (userID, giveToken) => {
     setIsLoggedIn(true);
     setUserID(userID);
+    setToken(token);
     localStorage.setItem("isLoggedIn", "true");
     localStorage.setItem("userID", userID);
     localStorage.setItem("token", giveToken);
@@ -29,6 +31,7 @@ const App = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserID(null);
+    setToken(null);
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userID");
     localStorage.removeItem("token");
@@ -65,6 +68,7 @@ const App = () => {
             />
           )}
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </div>
     </BrowserRouter>
