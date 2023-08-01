@@ -25,7 +25,7 @@ const columns = [
   {
     field: "path",
     headerName: "Path",
-    width: 400,
+    width: 250,
   },
   {
     field: "creationDate",

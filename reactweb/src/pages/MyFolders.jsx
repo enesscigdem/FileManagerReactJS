@@ -43,6 +43,7 @@ const MyFolders = ({ userID, token }) => {
     setPath(selectedpath);
     setDownloadType(selectedType);
   };
+
   const handleRowClick = async (params) => {
     const folderId = params.id;
     const folder = folders.find((folder) => folder.id === folderId);
@@ -109,7 +110,9 @@ const MyFolders = ({ userID, token }) => {
         config
       );
       setSuccessMessage("Klasör ismi başarıyla güncellendi!");
-      window.location.reload();
+      setTimeout(function () {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       setSuccessMessage("Klasör ismi güncellenirken bir hata oluştu!");
     }

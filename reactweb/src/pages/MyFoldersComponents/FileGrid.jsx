@@ -58,6 +58,7 @@ const FileGrid = ({
           }}
           pageSizeOptions={[10, 25, 50, 100]}
           pageSize={5}
+          density="compact"
           onRowDoubleClick={handleRowClick}
           onRowClick={handleRightClick}
           onCellEditStop={handleEditCellChange}

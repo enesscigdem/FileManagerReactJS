@@ -62,6 +62,7 @@ const FolderGrid = ({
             pagination: { paginationModel: { pageSize: 10 } },
           }}
           pageSizeOptions={[10, 25, 50, 100]}
+          density="compact"
           onRowDoubleClick={handleRowClick}
           onRowClick={handleRightClick}
           onCellEditStop={handleEditCellChange}

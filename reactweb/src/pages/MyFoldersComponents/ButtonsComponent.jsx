@@ -11,7 +11,11 @@ import {
 import Input from "@mui/material/Input";
 import handleCreateFolder from "./CreateFolder";
 import handleUploadFile from "./UploadFile";
-import { saveAs } from "file-saver";
+import DownloadFolderByZip from "./DownloadFolderByZip";
+import DownloadFile from "./DownloadFile";
+import DeleteFile from "./DeleteFile";
+import DeleteFolder from "./DeleteFolder";
+import "../../styles/popup.css";
 
 const ButtonsComponent = ({
   type,
@@ -26,8 +30,32 @@ const ButtonsComponent = ({
   const [successMessage, setSuccessMessage] = useState("");
   const [file, setFile] = useState(null);
   const [filePath, setFilePath] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
 
+  const getImage = async () => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7104/api/File/GetImageByFileId/${FileIdToDownload}`,
+        {
+          responseType: "arraybuffer",
+        }
+      );
+
+      const blob = new Blob([response.data], { type: "image/jpeg" });
+      const imgUrl = URL.createObjectURL(blob);
+      setImageUrl(imgUrl);
+    } catch (error) {
+      console.error("Error fetching image:", error);
+    }
+  };
+
+  const handleShowImage = () => {
+    getImage();
+  };
+
+  const handleCloseImage = () => {
+    setImageUrl(null);
+  };
   useEffect(() => {
     if (file) {
       handleUploadFileThis();
@@ -49,41 +77,30 @@ const ButtonsComponent = ({
     debugger;
     await handleUploadFile(file, token, parentFolderID, setSuccessMessage);
   };
-  const handleDownloadFile = async () => {
-    const url = `https://localhost:7104/api/File/DownloadFile/${FileIdToDownload}`;
-    try {
-      const response = await axios.get(url, {
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const fileName = FileNameToDownload;
 
-      saveAs(response.data, fileName);
-    } catch (error) {
-      console.error("Error downloading file:", error);
-    }
+  const handleDownloadFile = async () => {
+    await DownloadFile(
+      FileIdToDownload,
+      FileNameToDownload,
+      token,
+      setSuccessMessage
+    );
   };
   const handleDownloadFolderByZip = async () => {
-    const url = `https://localhost:7104/api/Folder/DownloadFolder/${encodeURIComponent(
-      FileNameToDownload
-    )}?folderPath=${encodeURIComponent(selectedpath)}`;
-    try {
-      const response = await axios.get(url, {
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const fileName = FileNameToDownload + ".zip";
-
-      saveAs(response.data, fileName);
-    } catch (error) {
-      console.error("Error downloading file:", error);
-    }
+    await DownloadFolderByZip(
+      FileNameToDownload,
+      selectedpath,
+      token,
+      setSuccessMessage
+    );
   };
-
+  const handleDeleteFile = async () => {
+    await DeleteFile(FileIdToDownload, token, setSuccessMessage);
+  };
+  const handleDeleteFolder = async () => {
+    debugger;
+    await DeleteFolder(FileIdToDownload, token, setSuccessMessage);
+  };
   return (
     <>
       <Stack
@@ -122,31 +139,12 @@ const ButtonsComponent = ({
             </Button>
           </label>
         </React.Fragment>
-        <Button
-          size="small"
-          color="warning"
-          variant="contained"
-          startIcon={<UploadFileSharp />}
-        >
-          Klasör Yükle
-        </Button>
-        {type === "folder" ? (
-          <></>
-        ) : (
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            onClick={() => window.location.reload()}
-          >
-            Ana Sayfa
-          </Button>
-        )}
+
         {downloadType === "file" ? (
           <>
             <Button
               size="small"
-              color="info"
+              color="warning"
               variant="contained"
               onClick={handleDownloadFile}
               startIcon={<FileDownload />}
@@ -158,7 +156,7 @@ const ButtonsComponent = ({
           <>
             <Button
               size="small"
-              color="info"
+              color="warning"
               variant="contained"
               onClick={handleDownloadFolderByZip}
               startIcon={<FileDownload />}
@@ -167,24 +165,61 @@ const ButtonsComponent = ({
             </Button>
           </>
         )}
+        {downloadType === "file" ? (
+          <Button
+            size="small"
+            color="error"
+            variant="contained"
+            startIcon={<UploadFileSharp />}
+            onClick={handleDeleteFile}
+          >
+            Sil
+          </Button>
+        ) : (
+          <Button
+            size="small"
+            color="error"
+            variant="contained"
+            onClick={handleDeleteFolder}
+            startIcon={<UploadFileSharp />}
+          >
+            Sil
+          </Button>
+        )}
+
+        {type === "folder" ? (
+          <></>
+        ) : (
+          <Button
+            size="small"
+            color="secondary"
+            variant="contained"
+            onClick={() => window.location.reload()}
+          >
+            Ana Sayfa
+          </Button>
+        )}
+        <Button
+          size="small"
+          color="secondary"
+          variant="contained"
+          onClick={handleShowImage}
+        >
+          İçeriği Göster
+        </Button>
       </Stack>
-      {successMessage && (
-        <div style={{ color: "green", fontWeight: "bold" }}>
-          {successMessage}
+      {imageUrl && (
+        <div className="image-popup">
+          <span className="close" onClick={handleCloseImage}>
+            &times;
+          </span>
+          <img src={imageUrl} alt="Popup Image" />
         </div>
       )}
-      {file && (
-        <section>
-          <br />
-          File details: <br />
-          <br />
-          <ul>
-            <li>Name: {file.name}</li>
-            <li>Type: {file.type}</li>
-            <li>Size: {file.size} bytes</li>
-            <li>Path: {filePath} bytes</li>
-          </ul>
-        </section>
+      {successMessage && (
+        <div style={{ color: "green", fontWeight: "900", fontSize: "16px" }}>
+          {successMessage}
+        </div>
       )}
       <style>
         {`

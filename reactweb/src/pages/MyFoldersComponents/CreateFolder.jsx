@@ -10,7 +10,7 @@ const handleCreateFolder = async (
     const config = {
       headers: { Authorization: `Bearer ${token}` },
     };
-
+    debugger;
     await axios.post(
       "https://localhost:7104/api/Folder/CreateFolder",
       {
@@ -22,9 +22,13 @@ const handleCreateFolder = async (
       config
     );
     setSuccessMessage("Klasör başarıyla oluşturuldu!");
-    window.location.reload();
+    setTimeout(function () {
+      window.location.reload();
+    }, 1000);
   } catch (error) {
-    setSuccessMessage("Klasör başarıyla oluşturuldu!");
+    setSuccessMessage(
+      "A folder with the same name already exists for this user in the same location."
+    );
     window.location.reload();
   }
 };
