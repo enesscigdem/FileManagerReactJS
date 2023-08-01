@@ -14,6 +14,10 @@ const FolderGrid = ({
   parentFolderID,
   handleEditCellChange,
   successMessage,
+  idd,
+  selectedFolderName,
+  selectedpath,
+  downloadType,
 }) => {
   return (
     <div>
@@ -23,6 +27,10 @@ const FolderGrid = ({
         userID={userID}
         token={token}
         parentFolderID={parentFolderID}
+        FileIdToDownload={idd}
+        FileNameToDownload={selectedFolderName}
+        selectedpath={selectedpath}
+        downloadType={downloadType}
       />
       {successMessage && (
         <div style={{ color: "green", fontWeight: "bold" }}>

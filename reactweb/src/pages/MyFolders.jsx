@@ -14,6 +14,9 @@ const MyFolders = ({ userID, token }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [folderPath, setFolderPath] = useState([]);
   const [folderIdforMenu, setfolderIdForMenu] = useState();
+  const [folderNameforMenu, setfolderNameforMenu] = useState();
+  const [selectedpath, setPath] = useState();
+  const [downloadType, setDownloadType] = useState();
   useEffect(() => {
     const hasPageLoaded = localStorage.getItem("hasPageLoaded");
 
@@ -25,8 +28,20 @@ const MyFolders = ({ userID, token }) => {
 
   const handleRightClick = async (params) => {
     const folderIdforMenu = params.id;
-    console.log(folderIdforMenu);
+    const folderNameforMenu = params.row.name;
+    const selectedpath = params.row.path;
+    const selectedType = params.row.type;
+    console.log(
+      folderIdforMenu,
+      folderNameforMenu,
+      params.row.type,
+      selectedpath,
+      selectedType
+    );
     setfolderIdForMenu(folderIdforMenu);
+    setfolderNameforMenu(folderNameforMenu);
+    setPath(selectedpath);
+    setDownloadType(selectedType);
   };
   const handleRowClick = async (params) => {
     const folderId = params.id;
@@ -116,6 +131,9 @@ const MyFolders = ({ userID, token }) => {
             handleEditCellChange={handleEditCellChange}
             successMessage={successMessage}
             idd={folderIdforMenu}
+            selectedFolderName={folderNameforMenu}
+            selectedpath={selectedpath}
+            downloadType={downloadType}
           />
         </>
       ) : (
@@ -130,6 +148,9 @@ const MyFolders = ({ userID, token }) => {
           idd={folderIdforMenu}
           handleEditCellChange={handleEditCellChange}
           successMessage={successMessage}
+          selectedFolderName={folderNameforMenu}
+          selectedpath={selectedpath}
+          downloadType={downloadType}
         />
       )}
     </div>
