@@ -36,8 +36,8 @@ function ResetPassword() {
       const response = await axios.post(
         "https://localhost:7104/api/User/ResetPassword",
         {
-          username: "enescigdem",
-          email: "enes_izmir18@hotmail.com",
+          username: "",
+          email: "",
           newPassword: newPassword,
           resetToken: token,
         }

@@ -24,17 +24,14 @@ const FileGrid = ({
   selectedpath,
   downloadType,
 }) => {
-  const [successMessage, setSuccessMessage] = useState(""); // Add this state for successMessage
+  const [successMessage, setSuccessMessage] = useState("");
   const handleFileDrop = async (item) => {
     try {
-      // Access the dropped file from item
       const file = item.files[0];
 
-      // Create a new FormData object to hold the file and folderID data
       const formData = new FormData();
       formData.append("file", file);
 
-      // Make an HTTP POST request to upload the file
       const response = await axios.post(
         `https://localhost:7104/api/File/UploadFile?folderID=${parentFolderID}`,
         formData,
@@ -56,12 +53,11 @@ const FileGrid = ({
 
   const [, drop] = useDrop({
     accept: [NativeTypes.FILE],
-    drop: (item) => handleFileDrop(item), // Call handleFileDrop function when file is dropped
+    drop: (item) => handleFileDrop(item),
   });
   if (!folderID || !folderName) {
     return null;
   }
-
   return (
     <div>
       <ButtonsComponent
@@ -96,6 +92,7 @@ const FileGrid = ({
             pagination: { paginationModel: { pageSize: 10 } },
           }}
           pageSizeOptions={[10, 25, 50, 100]}
+          rowHeight={61}
           pageSize={5}
           density="compact"
           onRowDoubleClick={handleRowClick}

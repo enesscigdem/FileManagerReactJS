@@ -25,8 +25,12 @@ const MyFolders = ({ userID, token }) => {
     if (!hasPageLoaded) {
       localStorage.setItem("hasPageLoaded", true);
       window.location.reload();
+    } else {
+      if (folders.length > 0) {
+        setSelectedFolder(folders[0]);
+      }
     }
-  }, []);
+  }, [folders]);
 
   const handleRightClick = async (params) => {
     const folderIdforMenu = params.id;
