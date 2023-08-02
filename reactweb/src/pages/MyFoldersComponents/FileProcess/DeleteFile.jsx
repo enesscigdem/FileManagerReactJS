@@ -13,7 +13,7 @@ const DeleteFile = async (FileIdToDownload, token, setSuccessMessage) => {
     setSuccessMessage("Dosya başarıyla silindi!");
     setTimeout(function () {
       window.location.reload();
-    }, 1000);
+    }, 500);
   } catch (error) {
     console.error("Error deleting file:", error);
   }

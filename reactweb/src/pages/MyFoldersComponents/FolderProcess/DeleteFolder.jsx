@@ -13,7 +13,7 @@ const DeleteFolder = async (FileIdToDownload, token, setSuccessMessage) => {
     setSuccessMessage("Klasör başarıyla silindi!");
     setTimeout(function () {
       window.location.reload();
-    }, 1000);
+    }, 500);
   } catch (error) {
     console.error("Error deleting folder:", error);
   }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { saveAs } from "file-saver";
 
 const DownloadFile = async (
   FileIdToDownload,
@@ -20,7 +21,7 @@ const DownloadFile = async (
     setSuccessMessage("Dosya başarıyla indirildi!");
     setTimeout(function () {
       window.location.reload();
-    }, 1000);
+    }, 500);
   } catch (error) {
     console.error("Error downloading file:", error);
   }

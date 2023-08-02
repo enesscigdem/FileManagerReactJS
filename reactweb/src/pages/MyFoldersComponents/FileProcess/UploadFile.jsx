@@ -27,7 +27,7 @@ const handleUploadFile = async (
       setSuccessMessage("Dosya başarıyla yüklendi!");
       setTimeout(function () {
         window.location.reload();
-      }, 1000);
+      }, 500);
     } else {
       setSuccessMessage("Dosya yükleme başarısız!");
     }

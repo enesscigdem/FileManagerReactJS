@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import ButtonsComponent from "./ButtonsComponent";
-import columns from "./columns";
+import ButtonsComponent from "../Buttons/ButtonsComponent";
+import columns from "../GridColumns/columns";
 
 const FolderGrid = ({
   userID,

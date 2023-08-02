@@ -24,7 +24,7 @@ const handleCreateFolder = async (
     setSuccessMessage("Klasör başarıyla oluşturuldu!");
     setTimeout(function () {
       window.location.reload();
-    }, 1000);
+    }, 500);
   } catch (error) {
     setSuccessMessage(
       "A folder with the same name already exists for this user in the same location."

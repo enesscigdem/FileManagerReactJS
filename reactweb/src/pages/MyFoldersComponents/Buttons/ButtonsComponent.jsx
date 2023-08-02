@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
   CreateNewFolder,
   UploadFileSharp,
   FileDownload,
+  Pageview,
+  CloudUpload,
 } from "@mui/icons-material";
 import Input from "@mui/material/Input";
-import handleCreateFolder from "./CreateFolder";
-import handleUploadFile from "./UploadFile";
-import DownloadFolderByZip from "./DownloadFolderByZip";
-import DownloadFile from "./DownloadFile";
-import DeleteFile from "./DeleteFile";
-import DeleteFolder from "./DeleteFolder";
-import "../../styles/popup.css";
+import handleCreateFolder from "../FolderProcess/CreateFolder";
+import handleUploadFile from "../FileProcess/UploadFile";
+import DownloadFolderByZip from "../FolderProcess/DownloadFolderByZip";
+import DownloadFile from "../FileProcess/DownloadFile";
+import DeleteFile from "../FileProcess/DeleteFile";
+import DeleteFolder from "../FolderProcess/DeleteFolder";
+import getImage from "../ShowContent/getImage";
+import getPdf from "../ShowContent/getPdf";
+import getVideo from "../ShowContent/getVideo";
+import ImagePopup from "../ShowContent/Popups/ImagePopup";
+import PdfPopup from "../ShowContent/Popups/PdfPopup";
+import VideoPopup from "../ShowContent/Popups/VideoPopup";
+import "../../../styles/popup.css";
 
 const ButtonsComponent = ({
   type,
@@ -31,31 +37,40 @@ const ButtonsComponent = ({
   const [file, setFile] = useState(null);
   const [filePath, setFilePath] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
 
-  const getImage = async () => {
-    try {
-      const response = await axios.get(
-        `https://localhost:7104/api/File/GetImageByFileId/${FileIdToDownload}`,
-        {
-          responseType: "arraybuffer",
-        }
-      );
-
-      const blob = new Blob([response.data], { type: "image/jpeg" });
-      const imgUrl = URL.createObjectURL(blob);
-      setImageUrl(imgUrl);
-    } catch (error) {
-      console.error("Error fetching image:", error);
+  const handleShow = async () => {
+    if (
+      FileNameToDownload &&
+      (FileNameToDownload.toLowerCase().includes(".pdf") ||
+        FileNameToDownload.toLowerCase().includes(".png") ||
+        FileNameToDownload.toLowerCase().includes(".jpg") ||
+        FileNameToDownload.toLowerCase().includes(".mp4") ||
+        FileNameToDownload.toLowerCase().includes(".avi") ||
+        FileNameToDownload.toLowerCase().includes(".mkv"))
+    ) {
+      if (FileNameToDownload.toLowerCase().includes(".pdf")) {
+        const pdfUrl = await getPdf(FileIdToDownload);
+        setPdfUrl(pdfUrl);
+      } else if (
+        FileNameToDownload.toLowerCase().includes(".png") ||
+        FileNameToDownload.toLowerCase().includes(".jpg")
+      ) {
+        const imageUrl = await getImage(FileIdToDownload);
+        setImageUrl(imageUrl);
+      } else {
+        const videoUrl = await getVideo(FileIdToDownload);
+        setVideoUrl(videoUrl);
+      }
     }
   };
-
-  const handleShowImage = () => {
-    getImage();
-  };
-
-  const handleCloseImage = () => {
+  const handleClose = () => {
     setImageUrl(null);
+    setPdfUrl(null);
+    setVideoUrl(null);
   };
+
   useEffect(() => {
     if (file) {
       handleUploadFileThis();
@@ -133,7 +148,7 @@ const ButtonsComponent = ({
               size="small"
               color="primary"
               variant="contained"
-              startIcon={<CloudUploadIcon />}
+              startIcon={<CloudUpload />}
             >
               Dosya Yükle
             </Button>
@@ -199,23 +214,20 @@ const ButtonsComponent = ({
             Ana Sayfa
           </Button>
         )}
+
         <Button
           size="small"
-          color="secondary"
+          color="primary"
           variant="contained"
-          onClick={handleShowImage}
+          onClick={handleShow}
+          startIcon={<Pageview />}
         >
           İçeriği Göster
         </Button>
       </Stack>
-      {imageUrl && (
-        <div className="image-popup">
-          <span className="close" onClick={handleCloseImage}>
-            &times;
-          </span>
-          <img src={imageUrl} alt="Popup Image" />
-        </div>
-      )}
+      {imageUrl && <ImagePopup imageUrl={imageUrl} handleClose={handleClose} />}
+      {pdfUrl && <PdfPopup pdfUrl={pdfUrl} handleClose={handleClose} />}
+      {videoUrl && <VideoPopup videoUrl={videoUrl} handleClose={handleClose} />}
       {successMessage && (
         <div style={{ color: "green", fontWeight: "900", fontSize: "16px" }}>
           {successMessage}

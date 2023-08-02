@@ -25,7 +25,7 @@ const columns = [
   {
     field: "path",
     headerName: "Path",
-    width: 250,
+    width: 400,
   },
   {
     field: "creationDate",
@@ -33,19 +33,24 @@ const columns = [
     width: 250,
   },
   {
-    field: "userID",
-    headerName: "User ID",
-    width: 150,
+    field: "size",
+    headerName: "Size (MB)",
+    width: 250,
   },
-  {
-    field: "folderID",
-    headerName: "Folder ID",
-    width: 150,
-  },
-  {
-    field: "fileID",
-    headerName: "File ID",
-    width: 150,
-  },
+  // {
+  //   field: "userID",
+  //   headerName: "User ID",
+  //   width: 150,
+  // },
+  // {
+  //   field: "folderID",
+  //   headerName: "Folder ID",
+  //   width: 150,
+  // },
+  // {
+  //   field: "fileID",
+  //   headerName: "File ID",
+  //   width: 150,
+  // },
 ];
 export default columns;

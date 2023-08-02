@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import useFetchFolders from "./MyFoldersComponents/useFetchFolders";
-import useFetchFiles from "./MyFoldersComponents/useFetchFiles";
-import useFetchSubFolders from "./MyFoldersComponents/useFetchSubFolders";
-import FolderGrid from "./MyFoldersComponents/FolderGrid";
-import FileGrid from "./MyFoldersComponents/FileGrid";
+import useFetchFolders from "./MyFoldersComponents/FetchProcess/useFetchFolders";
+import useFetchFiles from "./MyFoldersComponents/FetchProcess/useFetchFiles";
+import useFetchSubFolders from "./MyFoldersComponents/FetchProcess/useFetchSubFolders";
+import FolderGrid from "./MyFoldersComponents/GridProcess/FolderGrid";
+import FileGrid from "./MyFoldersComponents/GridProcess/FileGrid";
+import RenameFolderPage from "./MyFoldersComponents/FolderProcess/RenameFolder";
+import RenameFilePage from "./MyFoldersComponents/FileProcess/RenameFile";
 
 const MyFolders = ({ userID, token }) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
@@ -91,34 +93,30 @@ const MyFolders = ({ userID, token }) => {
     const { id, field } = params;
     const newValue = event.target.value;
     if (field === "name") {
-      handleRenameFolder(id, newValue);
+      if (params.row.type === "folder") handleRenameFolder(id, newValue);
+      else handleRenameFile(id, newValue);
     }
   };
   const handleRenameFolder = async (folderID, folderName) => {
-    debugger;
-    try {
-      const config = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
-      await axios.put(
-        "https://localhost:7104/api/Folder/RenameFolder",
-        {
-          folderID: folderID,
-          folderName: folderName,
-          path: " ",
-        },
-        config
-      );
-      setSuccessMessage("Klasör ismi başarıyla güncellendi!");
-      setTimeout(function () {
-        window.location.reload();
-      }, 1000);
-    } catch (error) {
-      setSuccessMessage("Klasör ismi güncellenirken bir hata oluştu!");
-    }
+    setSuccessMessage(await RenameFolderPage(folderID, folderName, token));
+    setTimeout(function () {
+      window.location.reload();
+    }, 500);
+  };
+
+  const handleRenameFile = async (fileID, fileName) => {
+    setSuccessMessage(await RenameFilePage(fileID, fileName, token));
+    setTimeout(function () {
+      window.location.reload();
+    }, 500);
   };
   return (
     <div>
+      {successMessage && (
+        <div style={{ color: "green", fontWeight: "bold" }}>
+          {successMessage}
+        </div>
+      )}
       {selectedFolder ? (
         <>
           <FileGrid
