@@ -45,7 +45,7 @@ const Login = ({ onLoginSuccess }) => {
       setIsSubmitted(true);
       onLoginSuccess(response.data.userID, response.data.token);
     } catch (error) {
-      setLoginError("Kullanıcı adı veya şifre hatalı!");
+      setLoginError("Username or password is wrong!");
     }
   };
 

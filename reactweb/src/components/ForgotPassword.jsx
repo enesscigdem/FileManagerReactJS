@@ -22,7 +22,7 @@ function ForgotPassword() {
 
   const resetPass = async (e) => {
     e.preventDefault();
-    setResetPassError(null);
+    setResetPassError("Sending email...");
     try {
       debugger;
       const response = await axios.post(

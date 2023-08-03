@@ -25,6 +25,7 @@ const FileGrid = ({
   downloadType,
 }) => {
   const [successMessage, setSuccessMessage] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
   const handleFileDrop = async (item) => {
     try {
       const file = item.files[0];
@@ -40,9 +41,15 @@ const FileGrid = ({
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+          },
         }
       );
-      setSuccessMessage("Dosya başarıyla yüklendi!");
+      setSuccessMessage("File uploaded successfully!");
       setTimeout(function () {
         window.location.reload();
       }, 500);
@@ -58,6 +65,20 @@ const FileGrid = ({
   if (!folderID || !folderName) {
     return null;
   }
+  const renderProgressText = (progress, action) =>
+    progress > 0 &&
+    progress < 100 && (
+      <div
+        style={{
+          marginTop: "10px",
+          color: "green",
+          fontWeight: "900",
+          fontSize: "16px",
+        }}
+      >
+        {action}.. {progress}%
+      </div>
+    );
   return (
     <div>
       <ButtonsComponent
@@ -70,6 +91,8 @@ const FileGrid = ({
         selectedpath={selectedpath}
         downloadType={downloadType}
       />
+      {renderProgressText(uploadProgress, "File Uploading...")}
+
       {successMessage && (
         <div style={{ color: "green", fontWeight: "bold" }}>
           {successMessage}

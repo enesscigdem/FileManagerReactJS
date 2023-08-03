@@ -10,7 +10,7 @@ const DeleteFolder = async (FileIdToDownload, token, setSuccessMessage) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    setSuccessMessage("Klasör başarıyla silindi!");
+    setSuccessMessage("Folder deleted successfully!");
     setTimeout(function () {
       window.location.reload();
     }, 500);

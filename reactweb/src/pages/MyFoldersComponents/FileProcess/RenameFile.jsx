@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 
 const RenameFilePage = async (fileID, fileName, token) => {
+  debugger;
   try {
     const config = {
       headers: { Authorization: `Bearer ${token}` },
@@ -15,9 +16,9 @@ const RenameFilePage = async (fileID, fileName, token) => {
       },
       config
     );
-    return "Dosya ismi başarıyla güncellendi!";
+    return "Filename updated successfully!";
   } catch (error) {
-    return "Dosya ismi güncellenirken bir hata oluştu!";
+    return "An error occurred while updating the filename!";
   }
 };
 

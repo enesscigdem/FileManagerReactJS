@@ -28,6 +28,7 @@ const MyFolders = ({ userID, token }) => {
     } else {
       if (folders.length > 0) {
         setSelectedFolder(folders[0]);
+        console.log(folders[0]);
       }
     }
   }, [folders]);
@@ -117,7 +118,13 @@ const MyFolders = ({ userID, token }) => {
   return (
     <div>
       {successMessage && (
-        <div style={{ color: "green", fontWeight: "bold" }}>
+        <div
+          style={{
+            color: "green",
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+        >
           {successMessage}
         </div>
       )}

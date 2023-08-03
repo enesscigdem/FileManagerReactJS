@@ -5,7 +5,8 @@ const DownloadFile = async (
   FileIdToDownload,
   FileNameToDownload,
   token,
-  setSuccessMessage
+  setSuccessMessage,
+  setDownloadProgress
 ) => {
   const url = `https://localhost:7104/api/File/DownloadFile/${FileIdToDownload}`;
   try {
@@ -14,11 +15,17 @@ const DownloadFile = async (
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      onDownloadProgress: (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        setDownloadProgress(percentCompleted);
+      },
     });
     const fileName = FileNameToDownload;
 
     saveAs(response.data, fileName);
-    setSuccessMessage("Dosya başarıyla indirildi!");
+    setSuccessMessage("The file has been downloaded successfully!");
     setTimeout(function () {
       window.location.reload();
     }, 500);
@@ -26,4 +33,5 @@ const DownloadFile = async (
     console.error("Error downloading file:", error);
   }
 };
+
 export default DownloadFile;

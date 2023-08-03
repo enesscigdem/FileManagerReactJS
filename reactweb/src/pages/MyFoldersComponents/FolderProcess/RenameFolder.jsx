@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 
 const RenameFolderPage = async (folderID, folderName, token) => {
+  debugger;
   try {
     const config = {
       headers: { Authorization: `Bearer ${token}` },
@@ -15,9 +16,9 @@ const RenameFolderPage = async (folderID, folderName, token) => {
       },
       config
     );
-    return "Klasör ismi başarıyla güncellendi!";
+    return "Folder name successfully updated!";
   } catch (error) {
-    return "Klasör ismi güncellenirken bir hata oluştu!";
+    return "An error occurred while updating the folder name!";
   }
 };
 

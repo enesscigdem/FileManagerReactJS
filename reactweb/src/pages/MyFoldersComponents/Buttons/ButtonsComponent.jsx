@@ -39,6 +39,8 @@ const ButtonsComponent = ({
   const [imageUrl, setImageUrl] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   const handleShow = async () => {
     if (
@@ -90,7 +92,13 @@ const ButtonsComponent = ({
   };
   const handleUploadFileThis = async () => {
     debugger;
-    await handleUploadFile(file, token, parentFolderID, setSuccessMessage);
+    await handleUploadFile(
+      file,
+      token,
+      parentFolderID,
+      setSuccessMessage,
+      setUploadProgress
+    );
   };
 
   const handleDownloadFile = async () => {
@@ -98,7 +106,8 @@ const ButtonsComponent = ({
       FileIdToDownload,
       FileNameToDownload,
       token,
-      setSuccessMessage
+      setSuccessMessage,
+      setDownloadProgress
     );
   };
   const handleDownloadFolderByZip = async () => {
@@ -106,7 +115,8 @@ const ButtonsComponent = ({
       FileNameToDownload,
       selectedpath,
       token,
-      setSuccessMessage
+      setSuccessMessage,
+      setDownloadProgress
     );
   };
   const handleDeleteFile = async () => {
@@ -116,6 +126,20 @@ const ButtonsComponent = ({
     debugger;
     await DeleteFolder(FileIdToDownload, token, setSuccessMessage);
   };
+  const renderProgressText = (progress, action) =>
+    progress > 0 &&
+    progress < 100 && (
+      <div
+        style={{
+          marginTop: "10px",
+          color: "green",
+          fontWeight: "900",
+          fontSize: "16px",
+        }}
+      >
+        {action}.. {progress}%
+      </div>
+    );
   return (
     <>
       <Stack
@@ -150,7 +174,7 @@ const ButtonsComponent = ({
               variant="contained"
               startIcon={<CloudUpload />}
             >
-              Dosya Yükle
+              Upload File
             </Button>
           </label>
         </React.Fragment>
@@ -164,7 +188,7 @@ const ButtonsComponent = ({
               onClick={handleDownloadFile}
               startIcon={<FileDownload />}
             >
-              Dosya İndir
+              Download File
             </Button>
           </>
         ) : (
@@ -176,7 +200,7 @@ const ButtonsComponent = ({
               onClick={handleDownloadFolderByZip}
               startIcon={<FileDownload />}
             >
-              Dosya İndir
+              Download File
             </Button>
           </>
         )}
@@ -188,7 +212,7 @@ const ButtonsComponent = ({
             startIcon={<UploadFileSharp />}
             onClick={handleDeleteFile}
           >
-            Sil
+            Delete
           </Button>
         ) : (
           <Button
@@ -198,7 +222,7 @@ const ButtonsComponent = ({
             onClick={handleDeleteFolder}
             startIcon={<UploadFileSharp />}
           >
-            Sil
+            Delete
           </Button>
         )}
 
@@ -211,7 +235,7 @@ const ButtonsComponent = ({
             variant="contained"
             onClick={() => window.location.reload()}
           >
-            Ana Sayfa
+            Home Page
           </Button>
         )}
 
@@ -222,14 +246,16 @@ const ButtonsComponent = ({
           onClick={handleShow}
           startIcon={<Pageview />}
         >
-          İçeriği Göster
+          Show Content (pic, video, pdf)
         </Button>
       </Stack>
       {imageUrl && <ImagePopup imageUrl={imageUrl} handleClose={handleClose} />}
       {pdfUrl && <PdfPopup pdfUrl={pdfUrl} handleClose={handleClose} />}
       {videoUrl && <VideoPopup videoUrl={videoUrl} handleClose={handleClose} />}
+      {renderProgressText(uploadProgress, "File Uploading...")}
+      {renderProgressText(downloadProgress, "Downloading File...")}
       {successMessage && (
-        <div style={{ color: "green", fontWeight: "900", fontSize: "16px" }}>
+        <div style={{ color: "green", fontWeight: "900", fontSize: "18px" }}>
           {successMessage}
         </div>
       )}

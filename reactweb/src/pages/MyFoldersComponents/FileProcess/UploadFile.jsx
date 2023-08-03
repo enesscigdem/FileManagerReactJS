@@ -5,7 +5,8 @@ const handleUploadFile = async (
   file,
   token,
   parentFolderID,
-  setSuccessMessage
+  setSuccessMessage,
+  setUploadProgress
 ) => {
   try {
     const formData = new FormData();
@@ -16,6 +17,12 @@ const handleUploadFile = async (
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        setUploadProgress(percentCompleted);
+      },
     };
     debugger;
     const response = await axios.post(
@@ -24,15 +31,15 @@ const handleUploadFile = async (
       config
     );
     if (response.status === 200) {
-      setSuccessMessage("Dosya başarıyla yüklendi!");
+      setSuccessMessage("File uploaded successfully!");
       setTimeout(function () {
         window.location.reload();
       }, 500);
     } else {
-      setSuccessMessage("Dosya yükleme başarısız!");
+      setSuccessMessage("File upload failed!");
     }
   } catch (error) {
-    setSuccessMessage("Dosya yükleme başarısız!");
+    setSuccessMessage("File upload failed!");
   }
 };
 

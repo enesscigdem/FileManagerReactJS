@@ -10,7 +10,7 @@ const DeleteFile = async (FileIdToDownload, token, setSuccessMessage) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    setSuccessMessage("Dosya başarıyla silindi!");
+    setSuccessMessage("File deleted successfully!");
     setTimeout(function () {
       window.location.reload();
     }, 500);

@@ -5,22 +5,30 @@ const handleDownloadFolderByZip = async (
   FileNameToDownload,
   selectedpath,
   token,
-  setSuccessMessage
+  setSuccessMessage,
+  setDownloadProgress
 ) => {
   const url = `https://localhost:7104/api/Folder/DownloadFolder/${encodeURIComponent(
     FileNameToDownload
   )}?folderPath=${encodeURIComponent(selectedpath)}`;
   try {
+    setSuccessMessage("Downloading File...");
     const response = await axios.get(url, {
       responseType: "blob",
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      onDownloadProgress: (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        setDownloadProgress(percentCompleted);
+      },
     });
     const fileName = FileNameToDownload + ".zip";
 
     saveAs(response.data, fileName);
-    setSuccessMessage("Klasör başarıyla indirildi!");
+    setSuccessMessage("Folder downloaded successfully!");
     setTimeout(function () {
       window.location.reload();
     }, 500);

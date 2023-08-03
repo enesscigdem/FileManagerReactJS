@@ -21,7 +21,7 @@ const handleCreateFolder = async (
       },
       config
     );
-    setSuccessMessage("Klasör başarıyla oluşturuldu!");
+    setSuccessMessage("Folder created successfully!");
     setTimeout(function () {
       window.location.reload();
     }, 500);
