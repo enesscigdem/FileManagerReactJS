@@ -5,7 +5,8 @@ import { NativeTypes } from "react-dnd-html5-backend";
 import ButtonsComponent from "../Buttons/ButtonsComponent";
 import columns from "../GridColumns/columns";
 import axios from "axios";
-import handleUploadFile from "../FileProcess/UploadFile";
+import Path from "../Path/Path";
+import NoRows from "./DataGridNoRows.jsx/NoRows";
 
 const FileGrid = ({
   userID,
@@ -79,6 +80,7 @@ const FileGrid = ({
         {action}.. {progress}%
       </div>
     );
+
   return (
     <div>
       <ButtonsComponent
@@ -92,12 +94,12 @@ const FileGrid = ({
         downloadType={downloadType}
       />
       {renderProgressText(uploadProgress, "File Uploading...")}
-
       {successMessage && (
         <div style={{ color: "green", fontWeight: "bold" }}>
           {successMessage}
         </div>
       )}
+      <Path />
       <div style={{ height: 560, width: "100%" }} ref={drop}>
         <DataGrid
           slotProps={{
@@ -106,7 +108,7 @@ const FileGrid = ({
               quickFilterProps: { debounceMs: 100 },
             },
           }}
-          slots={{ toolbar: GridToolbar }}
+          slots={{ toolbar: GridToolbar, noRowsOverlay: () => <NoRows /> }}
           rows={rows}
           columns={columns}
           {...rows}
@@ -117,9 +119,11 @@ const FileGrid = ({
           pageSizeOptions={[10, 25, 50, 100]}
           rowHeight={61}
           pageSize={5}
+          checkboxSelection
           density="compact"
           onRowDoubleClick={handleRowClick}
-          onRowClick={handleRightClick}
+          onCellClick={handleRightClick}
+          // onRowClick={handleRightClick}
           onCellEditStop={handleEditCellChange}
         />
       </div>

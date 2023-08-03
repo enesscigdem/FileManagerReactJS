@@ -3,8 +3,6 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -13,6 +11,8 @@ import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Alert from "@mui/material/Alert";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -22,7 +22,6 @@ import {
 import ForgotPassword from "./ForgotPassword.jsx";
 const Login = ({ onLoginSuccess }) => {
   const defaultTheme = createTheme();
-  const [isForgetPass, setIsForgetPass] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +32,7 @@ const Login = ({ onLoginSuccess }) => {
     setLoginError(null);
 
     try {
+      debugger;
       const response = await axios.post(
         "https://localhost:7104/api/User/Login",
         {
@@ -41,7 +41,7 @@ const Login = ({ onLoginSuccess }) => {
         }
       );
       console.log(response.data);
-      setLoginError("Giriş Başarılı");
+      setLoginError("Successfully Login");
       setIsSubmitted(true);
       onLoginSuccess(response.data.userID, response.data.token);
     } catch (error) {
@@ -121,7 +121,11 @@ const Login = ({ onLoginSuccess }) => {
                     </Grid>
                   </Grid>
                 </Box>
-                {loginError && <p style={{ color: "red" }}>{loginError}</p>}
+                {loginError && (
+                  <Alert sx={{ marginTop: 1 }} severity="error">
+                    {loginError}
+                  </Alert>
+                )}
               </CardContent>
             </Card>
           </Box>

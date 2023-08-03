@@ -32,7 +32,6 @@ const MyFolders = ({ userID, token }) => {
       }
     }
   }, [folders]);
-
   const handleRightClick = async (params) => {
     const folderIdforMenu = params.id;
     const folderNameforMenu = params.row.name;
@@ -115,6 +114,7 @@ const MyFolders = ({ userID, token }) => {
       window.location.reload();
     }, 500);
   };
+
   return (
     <div>
       {successMessage && (
@@ -128,6 +128,7 @@ const MyFolders = ({ userID, token }) => {
           {successMessage}
         </div>
       )}
+
       {selectedFolder ? (
         <>
           <FileGrid
