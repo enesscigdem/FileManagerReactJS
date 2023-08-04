@@ -7,18 +7,22 @@ import FolderGrid from "./MyFoldersComponents/GridProcess/FolderGrid";
 import FileGrid from "./MyFoldersComponents/GridProcess/FileGrid";
 import RenameFolderPage from "./MyFoldersComponents/FolderProcess/RenameFolder";
 import RenameFilePage from "./MyFoldersComponents/FileProcess/RenameFile";
+import useFetchAllFolders from "./MyFoldersComponents/FetchProcess/useFetchAllFolders";
 
 const MyFolders = ({ userID, token }) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
+  const foldersAll = useFetchAllFolders({ token });
   const folders = useFetchFolders({ userID, token });
   const subFolders = useFetchSubFolders(selectedFolder?.folderID, token);
   const files = useFetchFiles(selectedFolder?.folderID, token);
   const [successMessage, setSuccessMessage] = useState("");
   const [folderPath, setFolderPath] = useState([]);
+  const [folderPathId, setFolderPathId] = useState([]);
   const [folderIdforMenu, setfolderIdForMenu] = useState();
   const [folderNameforMenu, setfolderNameforMenu] = useState();
   const [selectedpath, setPath] = useState();
   const [downloadType, setDownloadType] = useState();
+
   useEffect(() => {
     const hasPageLoaded = localStorage.getItem("hasPageLoaded");
 
@@ -49,18 +53,13 @@ const MyFolders = ({ userID, token }) => {
     setPath(selectedpath);
     setDownloadType(selectedType);
   };
-
   const handleRowClick = async (params) => {
     const folderId = params.id;
     const folder = folders.find((folder) => folder.id === folderId);
     if (folder) {
-      setSelectedFolder((prevSelectedFolder) => {
-        setFolderPath((prevPath) => [
-          ...prevPath,
-          prevSelectedFolder?.folderName || "",
-        ]);
-        return folder;
-      });
+      setSelectedFolder(folder);
+      setFolderPath((prevPath) => [...prevPath, folder.folderName]);
+      setFolderPathId((prevPath) => [...prevPath, folder.folderID]);
     } else {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
@@ -79,19 +78,15 @@ const MyFolders = ({ userID, token }) => {
           type: "folder",
         };
 
-        setSelectedFolder((prevSelectedFolder) => {
-          setFolderPath((prevPath) => [
-            ...prevPath,
-            prevSelectedFolder?.folderName || "",
-          ]);
-          return subfolder;
-        });
-        console.log(selectedFolder);
+        setSelectedFolder(subfolder);
+        setFolderPath((prevPath) => [...prevPath, subfolder.name]);
+        setFolderPathId((prevPath) => [...prevPath, subfolder.folderID]);
       } catch (error) {
         console.error("Error fetching subfolder:", error);
       }
     }
   };
+
   const handleEditCellChange = async (params, event) => {
     debugger;
     const { id, field } = params;
@@ -102,17 +97,41 @@ const MyFolders = ({ userID, token }) => {
     }
   };
   const handleRenameFolder = async (folderID, folderName) => {
-    setSuccessMessage(await RenameFolderPage(folderID, folderName, token));
-    setTimeout(function () {
-      window.location.reload();
-    }, 500);
+    try {
+      await RenameFolderPage(folderID, folderName, token);
+      setSuccessMessage("Folder name successfully updated!");
+
+      const updatedFolder = foldersAll.find(
+        (folder) => folder.id === selectedFolder.folderID
+      );
+      if (updatedFolder.parentFolderID === null) {
+        debugger;
+        setTimeout(function () {
+          window.location.reload();
+        }, 250);
+      } else {
+        debugger;
+        setSelectedFolder(updatedFolder);
+      }
+    } catch (error) {
+      console.error("Error renaming folder:", error);
+      setSuccessMessage("An error occurred while updating the folder name!");
+    }
   };
 
   const handleRenameFile = async (fileID, fileName) => {
     setSuccessMessage(await RenameFilePage(fileID, fileName, token));
     setTimeout(function () {
       window.location.reload();
-    }, 500);
+    }, 100);
+  };
+  const handleFolderPathChange = (newPath) => {
+    setFolderPath(newPath);
+  };
+
+  const handleFolderClick = (folderId) => {
+    const selectedFolder2 = foldersAll.find((folder) => folder.id === folderId);
+    setSelectedFolder(selectedFolder2);
   };
 
   return (
@@ -147,6 +166,10 @@ const MyFolders = ({ userID, token }) => {
             selectedFolderName={folderNameforMenu}
             selectedpath={selectedpath}
             downloadType={downloadType}
+            folderPath={folderPath}
+            folderPathId={folderPathId}
+            setFolderPath={handleFolderPathChange}
+            onFolderClick={handleFolderClick}
           />
         </>
       ) : (
@@ -164,10 +187,13 @@ const MyFolders = ({ userID, token }) => {
           selectedFolderName={folderNameforMenu}
           selectedpath={selectedpath}
           downloadType={downloadType}
+          folderPath={folderPath}
+          folderPathId={folderPathId}
+          setFolderPath={handleFolderPathChange}
+          onFolderClick={handleFolderClick}
         />
       )}
     </div>
   );
 };
-
 export default MyFolders;

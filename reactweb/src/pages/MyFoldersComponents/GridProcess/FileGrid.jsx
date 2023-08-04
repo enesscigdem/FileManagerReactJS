@@ -24,6 +24,10 @@ const FileGrid = ({
   selectedFolderName,
   selectedpath,
   downloadType,
+  folderPath,
+  folderPathId,
+  setFolderPath,
+  onFolderClick,
 }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -92,6 +96,10 @@ const FileGrid = ({
         FileNameToDownload={selectedFolderName}
         selectedpath={selectedpath}
         downloadType={downloadType}
+        folderPath={folderPath}
+        folderPathId={folderPathId}
+        setFolderPath={setFolderPath}
+        onFolderClick={onFolderClick}
       />
       {renderProgressText(uploadProgress, "File Uploading...")}
       {successMessage && (
@@ -99,7 +107,6 @@ const FileGrid = ({
           {successMessage}
         </div>
       )}
-      <Path />
       <div style={{ height: 560, width: "100%" }} ref={drop}>
         <DataGrid
           slotProps={{

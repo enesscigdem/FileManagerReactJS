@@ -7,6 +7,7 @@ import {
   FileDownload,
   Pageview,
   CloudUpload,
+  HouseSharp,
 } from "@mui/icons-material";
 import Input from "@mui/material/Input";
 import handleCreateFolder from "../FolderProcess/CreateFolder";
@@ -22,6 +23,7 @@ import ImagePopup from "../ShowContent/Popups/ImagePopup";
 import PdfPopup from "../ShowContent/Popups/PdfPopup";
 import VideoPopup from "../ShowContent/Popups/VideoPopup";
 import "../../../styles/popup.css";
+import Path from "../Path/Path";
 
 const ButtonsComponent = ({
   type,
@@ -32,6 +34,10 @@ const ButtonsComponent = ({
   FileNameToDownload,
   selectedpath,
   downloadType,
+  folderPath,
+  folderPathId,
+  setFolderPath,
+  onFolderClick,
 }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [file, setFile] = useState(null);
@@ -54,6 +60,7 @@ const ButtonsComponent = ({
     ) {
       if (FileNameToDownload.toLowerCase().includes(".pdf")) {
         const pdfUrl = await getPdf(FileIdToDownload);
+
         setPdfUrl(pdfUrl);
       } else if (
         FileNameToDownload.toLowerCase().includes(".png") ||
@@ -234,6 +241,7 @@ const ButtonsComponent = ({
             color="secondary"
             variant="contained"
             onClick={() => window.location.reload()}
+            startIcon={<HouseSharp />}
           >
             Home Page
           </Button>
@@ -259,6 +267,12 @@ const ButtonsComponent = ({
           {successMessage}
         </div>
       )}
+      <Path
+        folderPath={folderPath}
+        folderPathId={folderPathId}
+        setFolderPath={setFolderPath}
+        onFolderClick={onFolderClick}
+      />
       <style>
         {`
             .boldHeader .MuiDataGrid-columnHeaderTitle {

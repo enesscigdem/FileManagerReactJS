@@ -1,4 +1,3 @@
-import React from "react";
 import axios from "axios";
 
 const RenameFolderPage = async (folderID, folderName, token) => {
@@ -12,13 +11,14 @@ const RenameFolderPage = async (folderID, folderName, token) => {
       {
         folderID: folderID,
         folderName: folderName,
-        path: " ",
+        Path: " ",
       },
       config
     );
     return "Folder name successfully updated!";
   } catch (error) {
-    return "An error occurred while updating the folder name!";
+    console.error("Error renaming folder:", error);
+    throw new Error("An error occurred while updating the folder name!");
   }
 };
 

@@ -18,6 +18,10 @@ const FolderGrid = ({
   selectedFolderName,
   selectedpath,
   downloadType,
+  folderPath,
+  folderPathId,
+  setFolderPath,
+  onFolderClick,
 }) => {
   return (
     <div>
@@ -31,6 +35,10 @@ const FolderGrid = ({
         FileNameToDownload={selectedFolderName}
         selectedpath={selectedpath}
         downloadType={downloadType}
+        folderPath={folderPath}
+        folderPathId={folderPathId}
+        setFolderPath={setFolderPath}
+        onFolderClick={onFolderClick}
       />
       {successMessage && (
         <div style={{ color: "green", fontWeight: "bold" }}>

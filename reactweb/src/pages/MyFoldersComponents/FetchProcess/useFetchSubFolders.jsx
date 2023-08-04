@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
+// useFetchSubFolders.jsx
+import { useState, useEffect } from "react";
 import axios from "axios";
+
 const useFetchSubFolders = (folderID, token) => {
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
   const [subFolders, setSubFolders] = useState([]);
 
   useEffect(() => {
     if (folderID) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+
       axios
         .get(
           `https://localhost:7104/api/Folder/GetFoldersByParentFolderID/${folderID}`,
@@ -32,4 +35,5 @@ const useFetchSubFolders = (folderID, token) => {
 
   return subFolders;
 };
+
 export default useFetchSubFolders;

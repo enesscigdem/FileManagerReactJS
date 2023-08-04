@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { emphasize, styled } from "@mui/material/styles";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Chip from "@mui/material/Chip";
 import HomeIcon from "@mui/icons-material/Home";
 import { FolderOpenOutlined } from "@mui/icons-material/";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
   const backgroundColor =
@@ -25,44 +24,39 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     },
   };
 });
+const Path = ({ folderPath, folderPathId, setFolderPath, onFolderClick }) => {
+  const handleClick = (event, index) => {
+    event.preventDefault();
+    const newPath = folderPath.slice(0, index + 1);
+    setFolderPath(newPath);
+    const selectedFolderId = folderPathId[index];
+    onFolderClick(selectedFolderId);
+  };
 
-function handleClick(event) {
-  event.preventDefault();
-  console.info("You clicked a breadcrumb.");
-}
+  return (
+    <div role="presentation">
+      <Breadcrumbs sx={{ marginBottom: 2 }} aria-label="breadcrumb">
+        <StyledBreadcrumb
+          sx={{ cursor: "pointer" }}
+          component="a"
+          onClick={() => window.location.reload()}
+          label="Home"
+          icon={<HomeIcon fontSize="small" />}
+        />
+        {folderPath.map((folderName, index) => (
+          <StyledBreadcrumb
+            key={index}
+            component="a"
+            href="#"
+            icon={<FolderOpenOutlined fontSize="small" />}
+            label={folderName}
+            sx={{ cursor: "pointer" }}
+            onClick={(event) => handleClick(event, index)}
+          />
+        ))}
+      </Breadcrumbs>
+    </div>
+  );
+};
 
-const Path = () => (
-  <div role="presentation" onClick={handleClick}>
-    <Breadcrumbs sx={{ marginBottom: 2 }} aria-label="breadcrumb">
-      <StyledBreadcrumb
-        sx={{ cursor: "pointer" }}
-        component="a"
-        onClick={() => window.location.reload()}
-        label="Home"
-        icon={<HomeIcon fontSize="small" />}
-      />
-      <StyledBreadcrumb
-        component="a"
-        href="#"
-        icon={<FolderOpenOutlined fontSize="small" />}
-        label="Test1"
-        sx={{ cursor: "pointer" }}
-      />
-      <StyledBreadcrumb
-        component="a"
-        href="#"
-        icon={<FolderOpenOutlined fontSize="small" />}
-        label="Test2"
-        sx={{ cursor: "pointer" }}
-      />
-      <StyledBreadcrumb
-        component="a"
-        href="#"
-        icon={<FolderOpenOutlined fontSize="small" />}
-        label="Test3"
-        sx={{ cursor: "pointer" }}
-      />
-    </Breadcrumbs>
-  </div>
-);
 export default Path;
