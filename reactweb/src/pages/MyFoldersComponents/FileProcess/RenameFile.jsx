@@ -12,7 +12,7 @@ const RenameFilePage = async (fileID, fileName, token) => {
       {
         fileID: fileID,
         fileName: fileName,
-        path: " ",
+        Path: " ",
       },
       config
     );

@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import useFetchFolders from "./MyFoldersComponents/FetchProcess/useFetchFolders";
-import useFetchFiles from "./MyFoldersComponents/FetchProcess/useFetchFiles";
-import useFetchSubFolders from "./MyFoldersComponents/FetchProcess/useFetchSubFolders";
 import FolderGrid from "./MyFoldersComponents/GridProcess/FolderGrid";
 import FileGrid from "./MyFoldersComponents/GridProcess/FileGrid";
 import RenameFolderPage from "./MyFoldersComponents/FolderProcess/RenameFolder";
@@ -12,9 +9,9 @@ import useFetchAllFolders from "./MyFoldersComponents/FetchProcess/useFetchAllFo
 const MyFolders = ({ userID, token }) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
   const foldersAll = useFetchAllFolders({ token });
-  const folders = useFetchFolders({ userID, token });
-  const subFolders = useFetchSubFolders(selectedFolder?.folderID, token);
-  const files = useFetchFiles(selectedFolder?.folderID, token);
+  const [folders, setFolders] = useState([]);
+  const [subFolders, setSubFolders] = useState([]);
+  const [files, setFiles] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [folderPath, setFolderPath] = useState([]);
   const [folderPathId, setFolderPathId] = useState([]);
@@ -36,6 +33,89 @@ const MyFolders = ({ userID, token }) => {
       }
     }
   }, [folders]);
+  useEffect(() => {
+    fetchFolders();
+  }, [userID, token]);
+  useEffect(() => {
+    fetchSubFolders();
+    fetchFiles();
+  }, [selectedFolder]);
+
+  const fetchFolders = async () => {
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      const response = await axios.get(
+        `https://localhost:7104/api/Folder/GetFoldersByUserID/${userID}`,
+        config
+      );
+
+      const foldersWithIds = response.data.map((folder) => ({
+        ...folder,
+        id: folder.folderID,
+        name: folder.folderName,
+        type: "folder",
+      }));
+
+      setFolders(foldersWithIds);
+    } catch (error) {
+      console.error("Error fetching folders:", error);
+    }
+  };
+  const fetchSubFolders = async () => {
+    if (selectedFolder) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+
+      try {
+        const response = await axios.get(
+          `https://localhost:7104/api/Folder/GetFoldersByParentFolderID/${selectedFolder.folderID}`,
+          config
+        );
+
+        const subFoldersWithIds = response.data.map((folder) => ({
+          ...folder,
+          id: folder.folderID,
+          name: folder.folderName,
+          type: "folder",
+        }));
+        setSubFolders(subFoldersWithIds);
+      } catch (error) {
+        console.error("Error fetching subfolders:", error);
+      }
+    } else {
+      setSubFolders([]);
+    }
+  };
+
+  const fetchFiles = async () => {
+    if (selectedFolder) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      try {
+        const response = await axios.get(
+          `https://localhost:7104/api/File/GetFilesByFolderID/${selectedFolder.folderID}`,
+          config
+        );
+
+        const filesWithIds = response.data.map((file) => ({
+          ...file,
+          id: file.fileID,
+          name: file.fileName,
+          type: "file",
+        }));
+        setFiles(filesWithIds);
+      } catch (error) {
+        console.error("Error fetching files:", error);
+      }
+    } else {
+      setFiles([]);
+    }
+  };
+
   const handleRightClick = async (params) => {
     const folderIdforMenu = params.id;
     const folderNameforMenu = params.row.name;
@@ -92,27 +172,28 @@ const MyFolders = ({ userID, token }) => {
     const { id, field } = params;
     const newValue = event.target.value;
     if (field === "name") {
-      if (params.row.type === "folder") handleRenameFolder(id, newValue);
-      else handleRenameFile(id, newValue);
+      if (params.row.type === "folder") {
+        handleRenameFolder(id, newValue);
+      } else if (params.row.type === "file") {
+        handleRenameFile(id, newValue);
+      }
     }
+  };
+  const clearSuccessMessage = () => {
+    setSuccessMessage("");
   };
   const handleRenameFolder = async (folderID, folderName) => {
     try {
+      debugger;
       await RenameFolderPage(folderID, folderName, token);
-      setSuccessMessage("Folder name successfully updated!");
-
-      const updatedFolder = foldersAll.find(
+      setTimeout(() => {
+        clearSuccessMessage();
+      }, 1000);
+      const updatedListFolder = foldersAll.find(
         (folder) => folder.id === selectedFolder.folderID
       );
-      if (updatedFolder.parentFolderID === null) {
-        debugger;
-        setTimeout(function () {
-          window.location.reload();
-        }, 250);
-      } else {
-        debugger;
-        setSelectedFolder(updatedFolder);
-      }
+      fetchFiles();
+      fetchSubFolders();
     } catch (error) {
       console.error("Error renaming folder:", error);
       setSuccessMessage("An error occurred while updating the folder name!");
@@ -121,19 +202,24 @@ const MyFolders = ({ userID, token }) => {
 
   const handleRenameFile = async (fileID, fileName) => {
     setSuccessMessage(await RenameFilePage(fileID, fileName, token));
-    setTimeout(function () {
-      window.location.reload();
-    }, 100);
+    setTimeout(() => {
+      clearSuccessMessage();
+    }, 1000);
+    const updatedListFile = foldersAll.find(
+      (folder) => folder.id === selectedFolder.folderID
+    );
+    fetchFiles();
+    fetchSubFolders();
   };
   const handleFolderPathChange = (newPath) => {
     setFolderPath(newPath);
   };
 
   const handleFolderClick = (folderId) => {
+    debugger;
     const selectedFolder2 = foldersAll.find((folder) => folder.id === folderId);
     setSelectedFolder(selectedFolder2);
   };
-
   return (
     <div>
       {successMessage && (
@@ -170,6 +256,8 @@ const MyFolders = ({ userID, token }) => {
             folderPathId={folderPathId}
             setFolderPath={handleFolderPathChange}
             onFolderClick={handleFolderClick}
+            fetchFiles={fetchFiles}
+            fetchSubFolders={fetchSubFolders}
           />
         </>
       ) : (
@@ -191,6 +279,8 @@ const MyFolders = ({ userID, token }) => {
           folderPathId={folderPathId}
           setFolderPath={handleFolderPathChange}
           onFolderClick={handleFolderClick}
+          fetchFiles={fetchFiles}
+          fetchSubFolders={fetchSubFolders}
         />
       )}
     </div>

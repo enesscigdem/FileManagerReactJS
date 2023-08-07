@@ -6,7 +6,9 @@ const handleUploadFile = async (
   token,
   parentFolderID,
   setSuccessMessage,
-  setUploadProgress
+  setUploadProgress,
+  fetchFiles,
+  fetchSubFolders
 ) => {
   try {
     const formData = new FormData();
@@ -32,9 +34,8 @@ const handleUploadFile = async (
     );
     if (response.status === 200) {
       setSuccessMessage("File uploaded successfully!");
-      setTimeout(function () {
-        window.location.reload();
-      }, 500);
+      fetchFiles();
+      fetchSubFolders();
     } else {
       setSuccessMessage("File upload failed!");
     }

@@ -6,7 +6,9 @@ const DownloadFile = async (
   FileNameToDownload,
   token,
   setSuccessMessage,
-  setDownloadProgress
+  setDownloadProgress,
+  fetchFiles,
+  fetchSubFolders
 ) => {
   const url = `https://localhost:7104/api/File/DownloadFile/${FileIdToDownload}`;
   try {
@@ -26,9 +28,8 @@ const DownloadFile = async (
 
     saveAs(response.data, fileName);
     setSuccessMessage("The file has been downloaded successfully!");
-    setTimeout(function () {
-      window.location.reload();
-    }, 500);
+    fetchFiles();
+    fetchSubFolders();
   } catch (error) {
     console.error("Error downloading file:", error);
   }

@@ -24,7 +24,6 @@ import PdfPopup from "../ShowContent/Popups/PdfPopup";
 import VideoPopup from "../ShowContent/Popups/VideoPopup";
 import "../../../styles/popup.css";
 import Path from "../Path/Path";
-
 const ButtonsComponent = ({
   type,
   userID,
@@ -38,6 +37,8 @@ const ButtonsComponent = ({
   folderPathId,
   setFolderPath,
   onFolderClick,
+  fetchFiles,
+  fetchSubFolders,
 }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [file, setFile] = useState(null);
@@ -95,7 +96,14 @@ const ButtonsComponent = ({
   };
 
   const handleClickCreateFolder = async () => {
-    await handleCreateFolder(token, userID, parentFolderID, setSuccessMessage);
+    await handleCreateFolder(
+      token,
+      userID,
+      parentFolderID,
+      setSuccessMessage,
+      fetchFiles,
+      fetchSubFolders
+    );
   };
   const handleUploadFileThis = async () => {
     debugger;
@@ -104,7 +112,9 @@ const ButtonsComponent = ({
       token,
       parentFolderID,
       setSuccessMessage,
-      setUploadProgress
+      setUploadProgress,
+      fetchFiles,
+      fetchSubFolders
     );
   };
 
@@ -127,11 +137,23 @@ const ButtonsComponent = ({
     );
   };
   const handleDeleteFile = async () => {
-    await DeleteFile(FileIdToDownload, token, setSuccessMessage);
+    await DeleteFile(
+      FileIdToDownload,
+      token,
+      setSuccessMessage,
+      fetchFiles,
+      fetchSubFolders
+    );
   };
   const handleDeleteFolder = async () => {
     debugger;
-    await DeleteFolder(FileIdToDownload, token, setSuccessMessage);
+    await DeleteFolder(
+      FileIdToDownload,
+      token,
+      setSuccessMessage,
+      fetchFiles,
+      fetchSubFolders
+    );
   };
   const renderProgressText = (progress, action) =>
     progress > 0 &&
@@ -149,7 +171,12 @@ const ButtonsComponent = ({
     );
   return (
     <>
-      <Stack
+      <Button
+        size="small"
+        variant="text"
+        onClick={handleClickCreateFolder}
+      ></Button>
+      {/* <Stack
         marginTop={2}
         marginBottom={2}
         spacing={2}
@@ -266,7 +293,7 @@ const ButtonsComponent = ({
         <div style={{ color: "green", fontWeight: "900", fontSize: "18px" }}>
           {successMessage}
         </div>
-      )}
+      )} */}
       <Path
         folderPath={folderPath}
         folderPathId={folderPathId}

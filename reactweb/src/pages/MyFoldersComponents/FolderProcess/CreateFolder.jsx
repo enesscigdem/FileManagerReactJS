@@ -4,7 +4,9 @@ const handleCreateFolder = async (
   token,
   userID,
   parentFolderID,
-  setSuccessMessage
+  setSuccessMessage,
+  fetchFiles,
+  fetchSubFolders
 ) => {
   try {
     const config = {
@@ -22,14 +24,11 @@ const handleCreateFolder = async (
       config
     );
     setSuccessMessage("Folder created successfully!");
-    setTimeout(function () {
-      window.location.reload();
-    }, 500);
+    fetchFiles();
+    fetchSubFolders();
   } catch (error) {
-    setSuccessMessage(
-      "A folder with the same name already exists for this user in the same location."
-    );
-    window.location.reload();
+    console.error("Error creating folder:", error);
+    setSuccessMessage("An error occurred while creating the folder!");
   }
 };
 export default handleCreateFolder;

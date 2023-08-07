@@ -1,5 +1,6 @@
 import axios from "axios";
 const getImage = async (FileIdToDownload) => {
+  debugger;
   try {
     const response = await axios.get(
       `https://localhost:7104/api/File/GetImageByFileId/${FileIdToDownload}`,

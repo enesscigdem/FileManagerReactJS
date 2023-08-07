@@ -22,6 +22,8 @@ const FolderGrid = ({
   folderPathId,
   setFolderPath,
   onFolderClick,
+  fetchFiles,
+  fetchSubFolders,
 }) => {
   return (
     <div>
@@ -39,6 +41,8 @@ const FolderGrid = ({
         folderPathId={folderPathId}
         setFolderPath={setFolderPath}
         onFolderClick={onFolderClick}
+        fetchFiles={fetchFiles}
+        fetchSubFolders={fetchSubFolders}
       />
       {successMessage && (
         <div style={{ color: "green", fontWeight: "bold" }}>

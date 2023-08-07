@@ -29,9 +29,8 @@ const handleDownloadFolderByZip = async (
 
     saveAs(response.data, fileName);
     setSuccessMessage("Folder downloaded successfully!");
-    setTimeout(function () {
-      window.location.reload();
-    }, 500);
+    fetchFiles();
+    fetchSubFolders();
   } catch (error) {
     console.error("Error downloading file:", error);
   }
