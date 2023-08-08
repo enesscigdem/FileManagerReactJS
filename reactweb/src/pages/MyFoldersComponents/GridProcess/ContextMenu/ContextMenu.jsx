@@ -10,6 +10,7 @@ import {
   FileDownloadSharp,
   PageviewSharp,
   DeleteForeverSharp,
+  DriveFileRenameOutlineSharp,
 } from "@mui/icons-material";
 import handleCreateFolder from "../../FolderProcess/CreateFolder";
 import DownloadFolderByZip from "../../FolderProcess/DownloadFolderByZip";
@@ -45,6 +46,7 @@ const ContextMenu = ({
   setDownloadProgress,
   handleCloseMenu,
   handleContextMenu,
+  setIsEditable,
 }) => {
   const [file, setFile] = useState(null);
   const [filePath, setFilePath] = useState("");
@@ -113,14 +115,16 @@ const ContextMenu = ({
     }
   };
   const handleDownloadFile = async () => {
-    await DownloadFile(
-      FileIdToDownload,
-      FileNameToDownload,
-      token,
-      setSuccessMessage,
-      setDownloadProgress
-    );
-    handleCloseMenu();
+    if (FileIdToDownload && FileNameToDownload) {
+      await DownloadFile(
+        FileIdToDownload,
+        FileNameToDownload,
+        token,
+        setSuccessMessage,
+        setDownloadProgress
+      );
+      handleCloseMenu();
+    }
   };
   const handleDownloadFolderByZip = async () => {
     await DownloadFolderByZip(
@@ -133,24 +137,32 @@ const ContextMenu = ({
     handleCloseMenu();
   };
   const handleDeleteFile = async () => {
-    await DeleteFile(
-      FileIdToDownload,
-      token,
-      setSuccessMessage,
-      fetchFiles,
-      fetchSubFolders
-    );
-    handleCloseMenu();
+    if (FileIdToDownload) {
+      await DeleteFile(
+        FileIdToDownload,
+        token,
+        setSuccessMessage,
+        fetchFiles,
+        fetchSubFolders
+      );
+      handleCloseMenu();
+    }
   };
+
   const handleDeleteFolder = async () => {
-    debugger;
-    await DeleteFolder(
-      FileIdToDownload,
-      token,
-      setSuccessMessage,
-      fetchFiles,
-      fetchSubFolders
-    );
+    if (FileIdToDownload) {
+      await DeleteFolder(
+        FileIdToDownload,
+        token,
+        setSuccessMessage,
+        fetchFiles,
+        fetchSubFolders
+      );
+      handleCloseMenu();
+    }
+  };
+  const handleRenameFolder = () => {
+    setIsEditable(true);
     handleCloseMenu();
   };
   return (
@@ -162,6 +174,12 @@ const ContextMenu = ({
               <CreateNewFolderSharp fontSize="small" />
             </ListItemIcon>
             <Typography variant="overline">CREATE FOLDER</Typography>
+          </MenuItem>
+          <MenuItem onClick={handleRenameFolder}>
+            <ListItemIcon>
+              <DriveFileRenameOutlineSharp fontSize="small" />
+            </ListItemIcon>
+            <Typography variant="overline">RENAME FOLDER</Typography>
           </MenuItem>
           <MenuItem>
             <ListItemIcon>
@@ -180,7 +198,6 @@ const ContextMenu = ({
                 letterSpacing: "0.08333em",
               }}
             >
-              {/* Dosya seçme işlemi için HTML input etiketi */}
               UPLOAD
             </label>
             <input

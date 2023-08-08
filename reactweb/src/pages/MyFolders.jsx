@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import FolderGrid from "./MyFoldersComponents/GridProcess/FolderGrid";
 import FileGrid from "./MyFoldersComponents/GridProcess/FileGrid";
 import RenameFolderPage from "./MyFoldersComponents/FolderProcess/RenameFolder";
 import RenameFilePage from "./MyFoldersComponents/FileProcess/RenameFile";
@@ -19,6 +18,7 @@ const MyFolders = ({ userID, token }) => {
   const [folderNameforMenu, setfolderNameforMenu] = useState();
   const [selectedpath, setPath] = useState();
   const [downloadType, setDownloadType] = useState();
+  const [isEditable, setIsEditable] = useState(false);
 
   useEffect(() => {
     const hasPageLoaded = localStorage.getItem("hasPageLoaded");
@@ -116,7 +116,7 @@ const MyFolders = ({ userID, token }) => {
     }
   };
 
-  const handleRightClick = async (params) => {
+  const CellClick = async (params) => {
     const folderIdforMenu = params.id;
     const folderNameforMenu = params.row.name;
     const selectedpath = params.row.path;
@@ -133,9 +133,9 @@ const MyFolders = ({ userID, token }) => {
     setPath(selectedpath);
     setDownloadType(selectedType);
   };
-  const handleRowClick = async (params) => {
+  const handleRowDoubleClick = async (params) => {
     const folderId = params.id;
-    const folder = folders.find((folder) => folder.id === folderId);
+    const folder = foldersAll.find((folder) => folder.id === folderId);
     if (folder) {
       setSelectedFolder(folder);
       setFolderPath((prevPath) => [...prevPath, folder.folderName]);
@@ -167,50 +167,51 @@ const MyFolders = ({ userID, token }) => {
     }
   };
 
-  const handleEditCellChange = async (params, event) => {
-    debugger;
-    const { id, field } = params;
-    const newValue = event.target.value;
-    if (field === "name") {
-      if (params.row.type === "folder") {
-        handleRenameFolder(id, newValue);
-      } else if (params.row.type === "file") {
-        handleRenameFile(id, newValue);
-      }
-    }
-  };
+  // const handleEditCellChange = async (params, event) => {
+  //   debugger;
+  //   const { id, field } = params;
+  //   const newValue = event.target.value;
+  //   if (field === "name") {
+  //     if (params.row.type === "folder") {
+  //       handleRenameFolder(id, newValue);
+  //     } else if (params.row.type === "file") {
+  //       handleRenameFile(id, newValue);
+  //     }
+  //   }
+  //   setIsEditable(false);
+  // };
   const clearSuccessMessage = () => {
     setSuccessMessage("");
   };
-  const handleRenameFolder = async (folderID, folderName) => {
-    try {
-      debugger;
-      await RenameFolderPage(folderID, folderName, token);
-      setTimeout(() => {
-        clearSuccessMessage();
-      }, 1000);
-      const updatedListFolder = foldersAll.find(
-        (folder) => folder.id === selectedFolder.folderID
-      );
-      fetchFiles();
-      fetchSubFolders();
-    } catch (error) {
-      console.error("Error renaming folder:", error);
-      setSuccessMessage("An error occurred while updating the folder name!");
-    }
-  };
+  // const handleRenameFolder = async (folderID, folderName) => {
+  //   try {
+  //     debugger;
+  //     await RenameFolderPage(folderID, folderName, token);
+  //     setTimeout(() => {
+  //       clearSuccessMessage();
+  //     }, 1000);
+  //     const updatedListFolder = foldersAll.find(
+  //       (folder) => folder.id === selectedFolder.folderID
+  //     );
+  //     fetchFiles();
+  //     fetchSubFolders();
+  //   } catch (error) {
+  //     console.error("Error renaming folder:", error);
+  //     setSuccessMessage("An error occurred while updating the folder name!");
+  //   }
+  // };
 
-  const handleRenameFile = async (fileID, fileName) => {
-    setSuccessMessage(await RenameFilePage(fileID, fileName, token));
-    setTimeout(() => {
-      clearSuccessMessage();
-    }, 1000);
-    const updatedListFile = foldersAll.find(
-      (folder) => folder.id === selectedFolder.folderID
-    );
-    fetchFiles();
-    fetchSubFolders();
-  };
+  // const handleRenameFile = async (fileID, fileName) => {
+  //   setSuccessMessage(await RenameFilePage(fileID, fileName, token));
+  //   setTimeout(() => {
+  //     clearSuccessMessage();
+  //   }, 1000);
+  //   const updatedListFile = foldersAll.find(
+  //     (folder) => folder.id === selectedFolder.folderID
+  //   );
+  //   fetchFiles();
+  //   fetchSubFolders();
+  // };
   const handleFolderPathChange = (newPath) => {
     setFolderPath(newPath);
   };
@@ -222,18 +223,6 @@ const MyFolders = ({ userID, token }) => {
   };
   return (
     <div>
-      {successMessage && (
-        <div
-          style={{
-            color: "green",
-            fontWeight: "bold",
-            fontSize: "18px",
-          }}
-        >
-          {successMessage}
-        </div>
-      )}
-
       {selectedFolder ? (
         <>
           <FileGrid
@@ -242,11 +231,11 @@ const MyFolders = ({ userID, token }) => {
             folderID={selectedFolder.folderID}
             folderName={selectedFolder.folderName}
             rows={[...subFolders, ...files]}
-            handleRowClick={handleRowClick}
-            handleRightClick={handleRightClick}
+            handleRowDoubleClick={handleRowDoubleClick}
+            handleRightClick={CellClick}
             currentPath={folderPath.join(" -> ")}
             parentFolderID={selectedFolder.folderID}
-            handleEditCellChange={handleEditCellChange}
+            // handleEditCellChange={handleEditCellChange}
             successMessage={successMessage}
             idd={folderIdforMenu}
             selectedFolderName={folderNameforMenu}
@@ -258,30 +247,13 @@ const MyFolders = ({ userID, token }) => {
             onFolderClick={handleFolderClick}
             fetchFiles={fetchFiles}
             fetchSubFolders={fetchSubFolders}
+            setIsEditable={setIsEditable}
+            isEditable={isEditable}
+            clearSuccessMessage={clearSuccessMessage}
           />
         </>
       ) : (
-        <FolderGrid
-          userID={userID}
-          token={token}
-          folders={folders}
-          handleRowClick={handleRowClick}
-          currentPath={folderPath.join(" -> ")}
-          parentFolderID={folders.folderID}
-          handleRightClick={handleRightClick}
-          idd={folderIdforMenu}
-          handleEditCellChange={handleEditCellChange}
-          successMessage={successMessage}
-          selectedFolderName={folderNameforMenu}
-          selectedpath={selectedpath}
-          downloadType={downloadType}
-          folderPath={folderPath}
-          folderPathId={folderPathId}
-          setFolderPath={handleFolderPathChange}
-          onFolderClick={handleFolderClick}
-          fetchFiles={fetchFiles}
-          fetchSubFolders={fetchSubFolders}
-        />
+        <div />
       )}
     </div>
   );

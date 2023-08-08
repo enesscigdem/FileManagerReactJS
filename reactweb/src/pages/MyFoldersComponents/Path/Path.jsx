@@ -34,8 +34,8 @@ const Path = ({ folderPath, folderPathId, setFolderPath, onFolderClick }) => {
   };
 
   return (
-    <div role="presentation">
-      <Breadcrumbs sx={{ marginBottom: 2 }} aria-label="breadcrumb">
+    <div>
+      <Breadcrumbs aria-label="breadcrumb">
         <StyledBreadcrumb
           sx={{ cursor: "pointer" }}
           component="a"

@@ -34,7 +34,7 @@ const Sidebar = ({ children, onLogout, userID, token }) => {
                   marginBottom: "10px",
                 }}
               >
-                Hoşgeldiniz,{userID}
+                {/* Hoşgeldiniz,{userID} */}
               </p>
               <img
                 src="https://www.fileorbis.com/assets/images/logo.svg"

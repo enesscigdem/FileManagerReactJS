@@ -4,7 +4,7 @@ import {
   Description as FileIcon,
 } from "@mui/icons-material";
 
-const columns = [
+const columns = (isEditable) => [
   {
     field: "name",
     headerName: "Name",
