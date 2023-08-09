@@ -166,52 +166,10 @@ const MyFolders = ({ userID, token }) => {
       }
     }
   };
-
-  // const handleEditCellChange = async (params, event) => {
-  //   debugger;
-  //   const { id, field } = params;
-  //   const newValue = event.target.value;
-  //   if (field === "name") {
-  //     if (params.row.type === "folder") {
-  //       handleRenameFolder(id, newValue);
-  //     } else if (params.row.type === "file") {
-  //       handleRenameFile(id, newValue);
-  //     }
-  //   }
-  //   setIsEditable(false);
-  // };
   const clearSuccessMessage = () => {
     setSuccessMessage("");
   };
-  // const handleRenameFolder = async (folderID, folderName) => {
-  //   try {
-  //     debugger;
-  //     await RenameFolderPage(folderID, folderName, token);
-  //     setTimeout(() => {
-  //       clearSuccessMessage();
-  //     }, 1000);
-  //     const updatedListFolder = foldersAll.find(
-  //       (folder) => folder.id === selectedFolder.folderID
-  //     );
-  //     fetchFiles();
-  //     fetchSubFolders();
-  //   } catch (error) {
-  //     console.error("Error renaming folder:", error);
-  //     setSuccessMessage("An error occurred while updating the folder name!");
-  //   }
-  // };
 
-  // const handleRenameFile = async (fileID, fileName) => {
-  //   setSuccessMessage(await RenameFilePage(fileID, fileName, token));
-  //   setTimeout(() => {
-  //     clearSuccessMessage();
-  //   }, 1000);
-  //   const updatedListFile = foldersAll.find(
-  //     (folder) => folder.id === selectedFolder.folderID
-  //   );
-  //   fetchFiles();
-  //   fetchSubFolders();
-  // };
   const handleFolderPathChange = (newPath) => {
     setFolderPath(newPath);
   };
@@ -235,7 +193,6 @@ const MyFolders = ({ userID, token }) => {
             handleRightClick={CellClick}
             currentPath={folderPath.join(" -> ")}
             parentFolderID={selectedFolder.folderID}
-            // handleEditCellChange={handleEditCellChange}
             successMessage={successMessage}
             idd={folderIdforMenu}
             selectedFolderName={folderNameforMenu}

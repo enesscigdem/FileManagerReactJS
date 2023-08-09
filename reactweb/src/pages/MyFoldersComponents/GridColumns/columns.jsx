@@ -10,7 +10,7 @@ const columns = (isEditable) => [
     headerName: "Name",
     width: 400,
     headerClassName: "boldHeader",
-    editable: true,
+    editable: isEditable,
     renderCell: (params) => (
       <div style={{ display: "flex", alignItems: "center" }}>
         {params.row.type === "folder" ? (

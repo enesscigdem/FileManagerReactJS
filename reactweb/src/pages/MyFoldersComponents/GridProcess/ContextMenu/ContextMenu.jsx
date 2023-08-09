@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
+import { DataGrid, GridCellModes } from "@mui/x-data-grid";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
@@ -24,7 +25,6 @@ import getVideo from "../../ShowContent/getVideo";
 import Input from "@mui/material/Input";
 
 const ContextMenu = ({
-  type,
   userID,
   token,
   parentFolderID,
@@ -32,10 +32,6 @@ const ContextMenu = ({
   FileNameToDownload,
   selectedpath,
   downloadType,
-  folderPath,
-  folderPathId,
-  setFolderPath,
-  onFolderClick,
   fetchFiles,
   fetchSubFolders,
   setSuccessMessage,
@@ -45,8 +41,11 @@ const ContextMenu = ({
   setUploadProgress,
   setDownloadProgress,
   handleCloseMenu,
-  handleContextMenu,
   setIsEditable,
+  setEnterEditMode,
+  selectedCellParams,
+  cellModesModel,
+  setCellModesModel,
 }) => {
   const [file, setFile] = useState(null);
   const [filePath, setFilePath] = useState("");
@@ -161,9 +160,17 @@ const ContextMenu = ({
       handleCloseMenu();
     }
   };
-  const handleRenameFolder = () => {
-    setIsEditable(true);
-    handleCloseMenu();
+  const handleRename = () => {
+    if (FileIdToDownload) {
+      const { id, field } = selectedCellParams;
+      setCellModesModel({
+        ...cellModesModel,
+        [id]: { ...cellModesModel[id], [field]: { mode: GridCellModes.Edit } },
+      });
+      setEnterEditMode(true);
+      setIsEditable(true);
+      handleCloseMenu();
+    }
   };
   return (
     <>
@@ -175,11 +182,11 @@ const ContextMenu = ({
             </ListItemIcon>
             <Typography variant="overline">CREATE FOLDER</Typography>
           </MenuItem>
-          <MenuItem onClick={handleRenameFolder}>
+          <MenuItem onClick={handleRename}>
             <ListItemIcon>
               <DriveFileRenameOutlineSharp fontSize="small" />
             </ListItemIcon>
-            <Typography variant="overline">RENAME FOLDER</Typography>
+            <Typography variant="overline">RENAME</Typography>
           </MenuItem>
           <MenuItem>
             <ListItemIcon>

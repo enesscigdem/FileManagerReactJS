@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid, GridCellModes } from "@mui/x-data-grid";
+import { DataGrid, GridCellModes, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Snackbar, Slide } from "@mui/material";
 import { useDrop } from "react-dnd";
@@ -22,76 +22,6 @@ import { DarkModeSharp, LightModeSharp } from "@mui/icons-material";
 import "../../../styles/popup.css";
 import RenameFolderPage from "../FolderProcess/RenameFolder";
 import RenameFilePage from "../FileProcess/RenameFile";
-
-function EditToolbar(props) {
-  const { selectedCellParams, cellMode, cellModesModel, setCellModesModel } =
-    props;
-
-  const handleSaveOrEdit = () => {
-    if (!selectedCellParams) {
-      return;
-    }
-    const { id, field } = selectedCellParams;
-    if (cellMode === "edit") {
-      setCellModesModel({
-        ...cellModesModel,
-        [id]: { ...cellModesModel[id], [field]: { mode: GridCellModes.View } },
-      });
-    } else {
-      setCellModesModel({
-        ...cellModesModel,
-        [id]: { ...cellModesModel[id], [field]: { mode: GridCellModes.Edit } },
-      });
-    }
-  };
-
-  const handleCancel = () => {
-    if (!selectedCellParams) {
-      return;
-    }
-    const { id, field } = selectedCellParams;
-    setCellModesModel({
-      ...cellModesModel,
-      [id]: {
-        ...cellModesModel[id],
-        [field]: { mode: GridCellModes.View, ignoreModifications: true },
-      },
-    });
-  };
-
-  const handleMouseDown = (event) => {
-    // Keep the focus in the cell
-    event.preventDefault();
-  };
-
-  return (
-    <Box
-      sx={{
-        borderBottom: 1,
-        borderColor: "divider",
-        p: 1,
-      }}
-    >
-      <Button
-        onClick={handleSaveOrEdit}
-        onMouseDown={handleMouseDown}
-        disabled={!selectedCellParams}
-        variant="outlined"
-      >
-        {cellMode === "edit" ? "Save" : "Edit"}
-      </Button>
-      <Button
-        onClick={handleCancel}
-        onMouseDown={handleMouseDown}
-        disabled={cellMode === "view"}
-        variant="outlined"
-        sx={{ ml: 1 }}
-      >
-        Cancel
-      </Button>
-    </Box>
-  );
-}
 
 const customTheme = createTheme({
   palette: {
@@ -180,11 +110,14 @@ const FileGrid = ({
   const [imageUrl, setImageUrl] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
-  const [open, setOpen] = React.useState(false);
-  const [openAlert, setOpenAlert] = React.useState(false);
-  const [anchorPosition, setAnchorPosition] = React.useState(null);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [anchorPosition, setAnchorPosition] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [mode, setMode] = useState(localStorage.getItem("themeMode") || "dark");
+  const [enterEditMode, setEnterEditMode] = useState(null);
+  const [selectedCellParams, setSelectedCellParams] = useState(null);
+  const [cellModesModel, setCellModesModel] = useState({});
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -287,7 +220,7 @@ const FileGrid = ({
       setTimeout(() => {
         setOpenAlert(false);
         setSuccessMessage("");
-      }, 4000);
+      }, 2000);
     }
   }, [successMessage, openAlert]);
 
@@ -308,9 +241,6 @@ const FileGrid = ({
     }
   }, []);
 
-  const [selectedCellParams, setSelectedCellParams] = React.useState(null);
-  const [cellModesModel, setCellModesModel] = React.useState({});
-
   const handleCellFocus = React.useCallback((event) => {
     const row = event.currentTarget.parentElement;
     const id = row.dataset.id;
@@ -318,25 +248,8 @@ const FileGrid = ({
     setSelectedCellParams({ id, field });
   }, []);
 
-  const cellMode = React.useMemo(() => {
-    if (!selectedCellParams) {
-      return "view";
-    }
-    const { id, field } = selectedCellParams;
-    return cellModesModel[id]?.[field]?.mode || "view";
-  }, [cellModesModel, selectedCellParams]);
-
-  const handleCellKeyDown = React.useCallback(
-    (params, event) => {
-      debugger;
-
-      if (cellMode === "edit") {
-        event.defaultMuiPrevented = true;
-      }
-    },
-    [cellMode]
-  );
-  const handleCellEditStop = React.useCallback((params, event) => {
+  const handleCellEditStop = async (params, event) => {
+    debugger;
     event.preventDefault();
     const { id, field } = params;
     const newValue = event.target.value;
@@ -347,30 +260,18 @@ const FileGrid = ({
         handleRenameFile(id, newValue);
       }
     }
-  }, []);
-
-  const handleRenameFolder = async (folderID, folderName) => {
-    try {
-      debugger;
-      await RenameFolderPage(folderID, folderName, token);
-      setTimeout(() => {
-        clearSuccessMessage();
-      }, 1000);
-      fetchFiles();
-      fetchSubFolders();
-    } catch (error) {
-      console.error("Error renaming folder:", error);
-      setSuccessMessage("An error occurred while updating the folder name!");
-    }
   };
-  const handleRenameFile = async (fileID, fileName) => {
-    setSuccessMessage(await RenameFilePage(fileID, fileName, token));
-    setTimeout(() => {
-      clearSuccessMessage();
-    }, 1000);
+  const handleRenameFolder = async (folderID, folderName) => {
+    setSuccessMessage(await RenameFolderPage(folderID, folderName, token));
     fetchFiles();
     fetchSubFolders();
   };
+  const handleRenameFile = async (fileID, fileName) => {
+    setSuccessMessage(await RenameFilePage(fileID, fileName, token));
+    fetchFiles();
+    fetchSubFolders();
+  };
+
   return (
     <div>
       <Stack spacing={2} sx={{ width: "100%" }}>
@@ -430,23 +331,19 @@ const FileGrid = ({
             <DataGrid
               rows={rows}
               columns={columns(isEditable)}
-              onCellKeyDown={handleCellKeyDown}
               cellModesModel={cellModesModel}
               onCellEditStop={handleCellEditStop}
               onCellModesModelChange={(model) => setCellModesModel(model)}
               slotProps={{
                 toolbar: {
-                  cellMode,
-                  selectedCellParams,
-                  setSelectedCellParams,
-                  cellModesModel,
-                  setCellModesModel,
+                  showQuickFilter: true,
+                  quickFilterProps: { debounceMs: 100 },
                 },
                 cell: {
                   onFocus: handleCellFocus,
                 },
               }}
-              slots={{ toolbar: EditToolbar, noRowsOverlay: () => <NoRows /> }}
+              slots={{ toolbar: GridToolbar, noRowsOverlay: () => <NoRows /> }}
               {...rows}
               initialState={{
                 ...rows.initialState,
@@ -458,8 +355,6 @@ const FileGrid = ({
               density="compact"
               onRowDoubleClick={handleRowDoubleClick}
               onCellClick={CellClick}
-              // onRowClick={handleRightClick}
-              // onCellEditStop={handleEditCellChange}
               onCellContextMenu={() => handleToggle()}
               checkboxSelection
               disableRowSelectionOnClick
@@ -491,7 +386,6 @@ const FileGrid = ({
               }}
             >
               <ContextMenu
-                type="file"
                 userID={userID}
                 token={token}
                 parentFolderID={parentFolderID}
@@ -499,10 +393,6 @@ const FileGrid = ({
                 FileNameToDownload={selectedFolderName}
                 selectedpath={selectedpath}
                 downloadType={downloadType}
-                folderPath={folderPath}
-                folderPathId={folderPathId}
-                setFolderPath={setFolderPath}
-                onFolderClick={onFolderClick}
                 fetchFiles={fetchFiles}
                 fetchSubFolders={fetchSubFolders}
                 setSuccessMessage={setSuccessMessage}
@@ -512,8 +402,11 @@ const FileGrid = ({
                 setUploadProgress={setUploadProgress}
                 setDownloadProgress={setDownloadProgress}
                 handleCloseMenu={handleCloseMenu}
-                handleContextMenu={handleContextMenu}
                 setIsEditable={setIsEditable}
+                setEnterEditMode={setEnterEditMode}
+                selectedCellParams={selectedCellParams}
+                cellModesModel={cellModesModel}
+                setCellModesModel={setCellModesModel}
               />
             </div>
           </ClickAwayListener>

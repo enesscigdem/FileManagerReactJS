@@ -2,7 +2,6 @@ import axios from "axios";
 
 const RenameFolderPage = async (folderID, folderName, token) => {
   try {
-    debugger;
     const config = {
       headers: { Authorization: `Bearer ${token}` },
     };
