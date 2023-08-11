@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid, GridCellModes, GridToolbar } from "@mui/x-data-grid";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Snackbar, Slide } from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { ThemeProvider } from "@mui/material/styles";
 import { useDrop } from "react-dnd";
 import { NativeTypes } from "react-dnd-html5-backend";
+import { Button } from "@mui/material";
+import { DarkModeSharp, LightModeSharp } from "@mui/icons-material";
+import { customTheme2 } from "../ThemeModes/customTheme2";
+import { customTheme } from "../ThemeModes/customTheme";
+import "../../../styles/popup.css";
 import Box from "@mui/material/Box";
 import columns from "../GridColumns/columns";
-import axios from "axios";
 import NoRows from "./DataGridNoRows.jsx/NoRows";
 import Popper from "@mui/material/Popper";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -16,80 +19,18 @@ import PdfPopup from "../ShowContent/Popups/PdfPopup";
 import VideoPopup from "../ShowContent/Popups/VideoPopup";
 import Path from "../Path/Path";
 import Stack from "@mui/material/Stack";
-import MuiAlert from "@mui/material/Alert";
-import { Button } from "@mui/material";
-import { DarkModeSharp, LightModeSharp } from "@mui/icons-material";
-import "../../../styles/popup.css";
 import RenameFolderPage from "../FolderProcess/RenameFolder";
 import RenameFilePage from "../FileProcess/RenameFile";
+import UploadFileDrop from "../FileProcess/UploadFileDrop";
+import SnackBarAlert from "../SnackBarAlert/SnackBarAlert";
 
-const customTheme = createTheme({
-  palette: {
-    mode: "dark", // Koyu tema modunu aktifleştirin
-    primary: {
-      main: "#90caf9",
-    },
-    secondary: {
-      main: "#f48fb1",
-    },
-    background: {
-      default: "#121212", // Arka plan rengini koyu yapın
-      paper: "#1e1e1e",
-    },
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: `
-        body {
-          background-color: #121212;
-        }
-      `,
-    },
-    MuiDataGrid: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#121212",
-        },
-      },
-    },
-  },
-  typography: {
-    fontFamily: "Arial, sans-serif",
-  },
-  shape: {
-    borderRadius: 20,
-  },
-  shadows: ["none"],
-});
-const customTheme2 = createTheme({
-  palette: {
-    type: "light",
-    primary: {
-      main: "#004080",
-    },
-    secondary: {
-      main: "#ff5722",
-    },
-  },
-  typography: {
-    fontFamily: "Arial, sans-serif",
-  },
-  shape: {
-    borderRadius: 20,
-  },
-  shadows: ["none"],
-});
 const FileGrid = ({
   userID,
   token,
-  folderName,
   rows,
-  folderID,
   handleRowDoubleClick,
   handleRightClick: CellClick,
-  currentPath,
   parentFolderID,
-  handleEditCellChange,
   idd,
   selectedFolderName,
   selectedpath,
@@ -102,7 +43,8 @@ const FileGrid = ({
   fetchSubFolders,
   setIsEditable,
   isEditable,
-  clearSuccessMessage,
+  setSelectedFilesForDelete,
+  selectedFilesforDelete,
 }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -111,7 +53,6 @@ const FileGrid = ({
   const [pdfUrl, setPdfUrl] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
   const [open, setOpen] = useState(false);
-  const [openAlert, setOpenAlert] = useState(false);
   const [anchorPosition, setAnchorPosition] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [mode, setMode] = useState(localStorage.getItem("themeMode") || "dark");
@@ -119,47 +60,21 @@ const FileGrid = ({
   const [selectedCellParams, setSelectedCellParams] = useState(null);
   const [cellModesModel, setCellModesModel] = useState({});
 
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
-  const handleFileDrop = async (item) => {
-    try {
-      const file = item.files[0];
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await axios.post(
-        `https://localhost:7104/api/File/UploadFile?folderID=${parentFolderID}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setUploadProgress(percentCompleted);
-          },
-        }
-      );
-      setSuccessMessage("File uploaded successfully!");
-      fetchFiles();
-      fetchSubFolders();
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-  };
   const [, drop] = useDrop({
     accept: [NativeTypes.FILE],
     drop: (item) => handleFileDrop(item),
   });
-  if (!folderID || !folderName) {
-    return null;
-  }
-
+  const handleFileDrop = async (item) => {
+    await UploadFileDrop(
+      item,
+      token,
+      parentFolderID,
+      setSuccessMessage,
+      setUploadProgress,
+      fetchFiles,
+      fetchSubFolders
+    );
+  };
   const handleToggle = (event) => {
     debugger;
     setAnchorPosition(
@@ -214,20 +129,7 @@ const FileGrid = ({
         {action}.. {progress}%
       </div>
     );
-  useEffect(() => {
-    if (successMessage && !openAlert) {
-      setOpenAlert(true);
-      setTimeout(() => {
-        setOpenAlert(false);
-        setSuccessMessage("");
-      }, 2000);
-    }
-  }, [successMessage, openAlert]);
 
-  const handleCloseAlert = (event, reason) => {
-    if (reason === "clickaway") return;
-    setOpenAlert(false);
-  };
   const changeMode = () => {
     const newMode = mode === "dark" ? "light" : "dark";
     setMode(newMode);
@@ -275,23 +177,10 @@ const FileGrid = ({
   return (
     <div>
       <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar
-          open={openAlert}
-          autoHideDuration={null}
-          TransitionComponent={Slide}
-          TransitionProps={{
-            direction: "right",
-          }}
-          onClose={handleCloseAlert}
-        >
-          <Alert
-            onClose={handleCloseAlert}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            {successMessage}
-          </Alert>
-        </Snackbar>
+        <SnackBarAlert
+          setSuccessMessage={setSuccessMessage}
+          successMessage={successMessage}
+        />
       </Stack>
       <div style={{ display: "flex", alignItems: "center" }}>
         <Button
@@ -334,6 +223,9 @@ const FileGrid = ({
               cellModesModel={cellModesModel}
               onCellEditStop={handleCellEditStop}
               onCellModesModelChange={(model) => setCellModesModel(model)}
+              onRowSelectionModelChange={(newSelection) =>
+                setSelectedFilesForDelete(newSelection)
+              }
               slotProps={{
                 toolbar: {
                   showQuickFilter: true,
@@ -407,6 +299,7 @@ const FileGrid = ({
                 selectedCellParams={selectedCellParams}
                 cellModesModel={cellModesModel}
                 setCellModesModel={setCellModesModel}
+                selectedFilesforDelete={selectedFilesforDelete}
               />
             </div>
           </ClickAwayListener>

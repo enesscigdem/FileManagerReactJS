@@ -39,7 +39,7 @@ const Path = ({ folderPath, folderPathId, setFolderPath, onFolderClick }) => {
         <StyledBreadcrumb
           sx={{ cursor: "pointer" }}
           component="a"
-          onClick={() => window.location.reload()}
+          href="/"
           label="Home"
           icon={<HomeIcon fontSize="small" />}
         />

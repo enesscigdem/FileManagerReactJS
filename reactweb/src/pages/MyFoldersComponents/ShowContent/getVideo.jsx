@@ -1,10 +1,15 @@
 import axios from "axios";
-const getVideo = async (FileIdToDownload) => {
+const getVideo = async (FileIdToDownload, token) => {
   try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
     const response = await axios.get(
       `https://localhost:7104/api/File/GetVideoByFileId/${FileIdToDownload}`,
       {
         responseType: "arraybuffer",
+        ...config,
       }
     );
 

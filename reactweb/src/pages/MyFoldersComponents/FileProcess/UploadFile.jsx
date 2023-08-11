@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import axios from "axios";
 
 const handleUploadFile = async (
@@ -6,9 +5,7 @@ const handleUploadFile = async (
   token,
   parentFolderID,
   setSuccessMessage,
-  setUploadProgress,
-  fetchFiles,
-  fetchSubFolders
+  setUploadProgress
 ) => {
   try {
     const formData = new FormData();
@@ -26,7 +23,6 @@ const handleUploadFile = async (
         setUploadProgress(percentCompleted);
       },
     };
-    debugger;
     const response = await axios.post(
       `https://localhost:7104/api/File/UploadFile?folderID=${parentFolderID}`,
       formData,
@@ -34,8 +30,6 @@ const handleUploadFile = async (
     );
     if (response.status === 200) {
       setSuccessMessage("File uploaded successfully!");
-      fetchFiles();
-      fetchSubFolders();
     } else {
       setSuccessMessage("File upload failed!");
     }

@@ -1,13 +1,6 @@
-import React from "react";
 import axios from "axios";
 
-const DeleteFile = async (
-  FileIdToDownload,
-  token,
-  setSuccessMessage,
-  fetchFiles,
-  fetchSubFolders
-) => {
+const DeleteFile = async (FileIdToDownload, token, setSuccessMessage) => {
   debugger;
   const url = `https://localhost:7104/api/File/DeleteFile/${FileIdToDownload}`;
   try {
@@ -17,8 +10,6 @@ const DeleteFile = async (
       },
     });
     setSuccessMessage("File deleted successfully!");
-    fetchFiles();
-    fetchSubFolders();
   } catch (error) {
     console.error("Error deleting file:", error);
   }

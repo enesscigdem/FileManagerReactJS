@@ -12,6 +12,7 @@ import {
   PageviewSharp,
   DeleteForeverSharp,
   DriveFileRenameOutlineSharp,
+  CloudUploadSharp,
 } from "@mui/icons-material";
 import handleCreateFolder from "../../FolderProcess/CreateFolder";
 import DownloadFolderByZip from "../../FolderProcess/DownloadFolderByZip";
@@ -22,7 +23,6 @@ import DeleteFolder from "../../FolderProcess/DeleteFolder";
 import getPdf from "../../ShowContent/getPdf";
 import getImage from "../../ShowContent/getImage";
 import getVideo from "../../ShowContent/getVideo";
-import Input from "@mui/material/Input";
 
 const ContextMenu = ({
   userID,
@@ -46,9 +46,10 @@ const ContextMenu = ({
   selectedCellParams,
   cellModesModel,
   setCellModesModel,
+  selectedFilesforDelete,
 }) => {
-  const [file, setFile] = useState(null);
-  const [filePath, setFilePath] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState(null);
+
   const handleClickCreateFolder = async () => {
     await handleCreateFolder(
       token,
@@ -60,32 +61,14 @@ const ContextMenu = ({
     );
     handleCloseMenu();
   };
-  useEffect(() => {
-    if (file) {
-      debugger;
-      handleUploadFileThis();
-    }
-  }, [file]);
-  const handleFileChange = (e) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-      setFilePath(e.target.value);
-    }
-  };
 
-  const handleUploadFileThis = async () => {
-    debugger;
-    await handleUploadFile(
-      file,
-      token,
-      parentFolderID,
-      setSuccessMessage,
-      setUploadProgress,
-      fetchFiles,
-      fetchSubFolders
-    );
-    handleCloseMenu();
-  };
+  useEffect(() => {
+    if (selectedFiles) {
+      debugger;
+      handleUploadMultipleFiles();
+    }
+  }, [selectedFiles]);
+
   const handleShow = async () => {
     debugger;
     if (
@@ -98,20 +81,21 @@ const ContextMenu = ({
         FileNameToDownload.toLowerCase().includes(".mkv"))
     ) {
       if (FileNameToDownload.toLowerCase().includes(".pdf")) {
-        const pdfUrl = await getPdf(FileIdToDownload);
+        const pdfUrl = await getPdf(FileIdToDownload, token);
 
         setPdfUrl(pdfUrl);
       } else if (
         FileNameToDownload.toLowerCase().includes(".png") ||
         FileNameToDownload.toLowerCase().includes(".jpg")
       ) {
-        const imageUrl = await getImage(FileIdToDownload);
+        const imageUrl = await getImage(FileIdToDownload, token);
         setImageUrl(imageUrl);
       } else {
-        const videoUrl = await getVideo(FileIdToDownload);
+        const videoUrl = await getVideo(FileIdToDownload, token);
         setVideoUrl(videoUrl);
       }
     }
+    handleCloseMenu();
   };
   const handleDownloadFile = async () => {
     if (FileIdToDownload && FileNameToDownload) {
@@ -136,15 +120,17 @@ const ContextMenu = ({
     handleCloseMenu();
   };
   const handleDeleteFile = async () => {
-    if (FileIdToDownload) {
-      await DeleteFile(
-        FileIdToDownload,
-        token,
-        setSuccessMessage,
-        fetchFiles,
-        fetchSubFolders
-      );
-      handleCloseMenu();
+    handleCloseMenu();
+    if (selectedFilesforDelete[1] !== undefined) {
+      for (const fileDelete of selectedFilesforDelete) {
+        await DeleteFile(fileDelete, token, setSuccessMessage);
+      }
+      fetchFiles();
+      fetchSubFolders();
+    } else {
+      await DeleteFile(FileIdToDownload, token, setSuccessMessage);
+      fetchFiles();
+      fetchSubFolders();
     }
   };
 
@@ -172,6 +158,32 @@ const ContextMenu = ({
       handleCloseMenu();
     }
   };
+  const handleMultipleFileChange = (e) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setSelectedFiles(filesArray);
+    }
+  };
+
+  const handleUploadMultipleFiles = async () => {
+    handleCloseMenu();
+    try {
+      for (const file of selectedFiles) {
+        await handleUploadFile(
+          file,
+          token,
+          parentFolderID,
+          setSuccessMessage,
+          setUploadProgress
+        );
+      }
+      setSelectedFiles([]);
+      fetchFiles();
+      fetchSubFolders();
+    } catch (error) {
+      console.error("Multiple file upload failed:", error);
+    }
+  };
   return (
     <>
       <Paper sx={{ width: 200 }}>
@@ -190,10 +202,10 @@ const ContextMenu = ({
           </MenuItem>
           <MenuItem>
             <ListItemIcon>
-              <UploadFileSharp fontSize="small" />
+              <CloudUploadSharp fontSize="small" />
             </ListItemIcon>
             <label
-              htmlFor="fileInput"
+              htmlFor="fileInput2"
               style={{
                 display: "inline-block",
                 color: "inherit",
@@ -209,9 +221,10 @@ const ContextMenu = ({
             </label>
             <input
               type="file"
-              id="fileInput"
+              id="fileInput2"
               style={{ display: "none" }}
-              onChange={handleFileChange}
+              multiple
+              onChange={handleMultipleFileChange}
             />
           </MenuItem>
           {downloadType === "file" && (

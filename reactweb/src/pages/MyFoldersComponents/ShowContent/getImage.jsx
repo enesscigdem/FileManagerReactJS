@@ -1,11 +1,16 @@
 import axios from "axios";
-const getImage = async (FileIdToDownload) => {
+const getImage = async (FileIdToDownload, token) => {
   debugger;
   try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
     const response = await axios.get(
       `https://localhost:7104/api/File/GetImageByFileId/${FileIdToDownload}`,
       {
         responseType: "arraybuffer",
+        ...config,
       }
     );
 
