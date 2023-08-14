@@ -5,9 +5,7 @@ const UploadFileDrop = async (
   token,
   parentFolderID,
   setSuccessMessage,
-  setUploadProgress,
-  fetchFiles,
-  fetchSubFolders
+  setProgress
 ) => {
   try {
     const file = item.files[0];
@@ -27,13 +25,11 @@ const UploadFileDrop = async (
           const percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
           );
-          setUploadProgress(percentCompleted);
+          setProgress(percentCompleted);
         },
       }
     );
     setSuccessMessage("File uploaded successfully!");
-    fetchFiles();
-    fetchSubFolders();
   } catch (error) {
     console.error("Error uploading file:", error);
   }

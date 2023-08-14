@@ -7,8 +7,7 @@ const DownloadFile = async (
   token,
   setSuccessMessage,
   setDownloadProgress,
-  fetchFiles,
-  fetchSubFolders
+  setProgress
 ) => {
   const url = `https://localhost:7104/api/File/DownloadFile/${FileIdToDownload}`;
   try {
@@ -21,15 +20,13 @@ const DownloadFile = async (
         const percentCompleted = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
         );
-        setDownloadProgress(percentCompleted);
+        setProgress(percentCompleted);
       },
     });
     const fileName = FileNameToDownload;
 
     saveAs(response.data, fileName);
     setSuccessMessage("The file has been downloaded successfully!");
-    fetchFiles();
-    fetchSubFolders();
   } catch (error) {
     console.error("Error downloading file:", error);
   }

@@ -7,7 +7,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
 import {
   CreateNewFolderSharp,
-  UploadFileSharp,
   FileDownloadSharp,
   PageviewSharp,
   DeleteForeverSharp,
@@ -47,6 +46,7 @@ const ContextMenu = ({
   cellModesModel,
   setCellModesModel,
   selectedFilesforDelete,
+  setProgress,
 }) => {
   const [selectedFiles, setSelectedFiles] = useState(null);
 
@@ -64,13 +64,11 @@ const ContextMenu = ({
 
   useEffect(() => {
     if (selectedFiles) {
-      debugger;
       handleUploadMultipleFiles();
     }
   }, [selectedFiles]);
 
   const handleShow = async () => {
-    debugger;
     if (
       FileNameToDownload &&
       (FileNameToDownload.toLowerCase().includes(".pdf") ||
@@ -99,25 +97,27 @@ const ContextMenu = ({
   };
   const handleDownloadFile = async () => {
     if (FileIdToDownload && FileNameToDownload) {
+      handleCloseMenu();
       await DownloadFile(
         FileIdToDownload,
         FileNameToDownload,
         token,
         setSuccessMessage,
-        setDownloadProgress
+        setDownloadProgress,
+        setProgress
       );
-      handleCloseMenu();
     }
   };
   const handleDownloadFolderByZip = async () => {
+    handleCloseMenu();
     await DownloadFolderByZip(
       FileNameToDownload,
       selectedpath,
       token,
       setSuccessMessage,
-      setDownloadProgress
+      setDownloadProgress,
+      setProgress
     );
-    handleCloseMenu();
   };
   const handleDeleteFile = async () => {
     handleCloseMenu();
@@ -147,16 +147,22 @@ const ContextMenu = ({
     }
   };
   const handleRename = () => {
-    if (FileIdToDownload) {
-      const { id, field } = selectedCellParams;
-      setCellModesModel({
-        ...cellModesModel,
-        [id]: { ...cellModesModel[id], [field]: { mode: GridCellModes.Edit } },
-      });
-      setEnterEditMode(true);
-      setIsEditable(true);
-      handleCloseMenu();
-    }
+    debugger;
+    try {
+      if (FileIdToDownload) {
+        const { id, field } = selectedCellParams;
+        setCellModesModel({
+          ...cellModesModel,
+          [id]: {
+            ...cellModesModel[id],
+            [field]: { mode: GridCellModes.Edit },
+          },
+        });
+        setEnterEditMode(true);
+        setIsEditable(true);
+        handleCloseMenu();
+      }
+    } catch {}
   };
   const handleMultipleFileChange = (e) => {
     if (e.target.files) {
@@ -174,7 +180,8 @@ const ContextMenu = ({
           token,
           parentFolderID,
           setSuccessMessage,
-          setUploadProgress
+          setUploadProgress,
+          setProgress
         );
       }
       setSelectedFiles([]);

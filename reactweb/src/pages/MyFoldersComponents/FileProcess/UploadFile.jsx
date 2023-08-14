@@ -5,7 +5,8 @@ const handleUploadFile = async (
   token,
   parentFolderID,
   setSuccessMessage,
-  setUploadProgress
+  setUploadProgress,
+  setProgress
 ) => {
   try {
     const formData = new FormData();
@@ -20,7 +21,7 @@ const handleUploadFile = async (
         const percentCompleted = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
         );
-        setUploadProgress(percentCompleted);
+        setProgress(percentCompleted);
       },
     };
     const response = await axios.post(

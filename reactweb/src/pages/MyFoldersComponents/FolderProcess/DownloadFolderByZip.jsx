@@ -6,13 +6,20 @@ const handleDownloadFolderByZip = async (
   selectedpath,
   token,
   setSuccessMessage,
-  setDownloadProgress
+  setDownloadProgress,
+  setProgress
 ) => {
-  const url = `https://localhost:7104/api/Folder/DownloadFolder/${encodeURIComponent(
-    FileNameToDownload
-  )}?folderPath=${encodeURIComponent(selectedpath)}`;
   try {
     setSuccessMessage("Downloading File...");
+
+    setProgress(0);
+    setTimeout(() => {
+      setProgress(1);
+    }, 100);
+    const url = `https://localhost:7104/api/Folder/DownloadFolder/${encodeURIComponent(
+      FileNameToDownload
+    )}?folderPath=${encodeURIComponent(selectedpath)}`;
+
     const response = await axios.get(url, {
       responseType: "blob",
       headers: {
@@ -22,9 +29,10 @@ const handleDownloadFolderByZip = async (
         const percentCompleted = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
         );
-        setDownloadProgress(percentCompleted);
+        setProgress(percentCompleted);
       },
     });
+
     const fileName = FileNameToDownload + ".zip";
 
     saveAs(response.data, fileName);

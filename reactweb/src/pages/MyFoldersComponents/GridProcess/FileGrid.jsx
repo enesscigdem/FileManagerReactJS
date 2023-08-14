@@ -7,6 +7,7 @@ import { Button } from "@mui/material";
 import { DarkModeSharp, LightModeSharp } from "@mui/icons-material";
 import { customTheme2 } from "../ThemeModes/customTheme2";
 import { customTheme } from "../ThemeModes/customTheme";
+import { CircularProgressWithLabel } from "../ProgressBar/Progress";
 import "../../../styles/popup.css";
 import Box from "@mui/material/Box";
 import columns from "../GridColumns/columns";
@@ -47,8 +48,7 @@ const FileGrid = ({
   selectedFilesforDelete,
 }) => {
   const [successMessage, setSuccessMessage] = useState("");
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
@@ -70,10 +70,10 @@ const FileGrid = ({
       token,
       parentFolderID,
       setSuccessMessage,
-      setUploadProgress,
-      fetchFiles,
-      fetchSubFolders
+      setProgress
     );
+    fetchFiles();
+    fetchSubFolders();
   };
   const handleToggle = (event) => {
     debugger;
@@ -115,21 +115,6 @@ const FileGrid = ({
     setAnchorPosition(null);
     setAnchorEl(null);
   };
-  const renderProgressText = (progress, action) =>
-    progress > 0 &&
-    progress < 100 && (
-      <div
-        style={{
-          marginTop: "10px",
-          color: "green",
-          fontWeight: "900",
-          fontSize: "16px",
-        }}
-      >
-        {action}.. {progress}%
-      </div>
-    );
-
   const changeMode = () => {
     const newMode = mode === "dark" ? "light" : "dark";
     setMode(newMode);
@@ -165,15 +150,16 @@ const FileGrid = ({
   };
   const handleRenameFolder = async (folderID, folderName) => {
     setSuccessMessage(await RenameFolderPage(folderID, folderName, token));
+    setIsEditable(false);
     fetchFiles();
     fetchSubFolders();
   };
   const handleRenameFile = async (fileID, fileName) => {
     setSuccessMessage(await RenameFilePage(fileID, fileName, token));
+    setIsEditable(false);
     fetchFiles();
     fetchSubFolders();
   };
-
   return (
     <div>
       <Stack spacing={2} sx={{ width: "100%" }}>
@@ -207,9 +193,11 @@ const FileGrid = ({
       {videoUrl && (
         <VideoPopup videoUrl={videoUrl} handleClose={handleCloseContent} />
       )}
-      {renderProgressText(uploadProgress, "File Uploading...")}
-      {renderProgressText(downloadProgress, "Downloading File...")}
-
+      {progress !== 0 && progress !== 100 ? (
+        <CircularProgressWithLabel value={progress} />
+      ) : (
+        <> </>
+      )}
       <div
         style={{ height: "100%", width: "100%" }}
         ref={drop}
@@ -291,8 +279,6 @@ const FileGrid = ({
                 setImageUrl={setImageUrl}
                 setPdfUrl={setPdfUrl}
                 setVideoUrl={setVideoUrl}
-                setUploadProgress={setUploadProgress}
-                setDownloadProgress={setDownloadProgress}
                 handleCloseMenu={handleCloseMenu}
                 setIsEditable={setIsEditable}
                 setEnterEditMode={setEnterEditMode}
@@ -300,6 +286,7 @@ const FileGrid = ({
                 cellModesModel={cellModesModel}
                 setCellModesModel={setCellModesModel}
                 selectedFilesforDelete={selectedFilesforDelete}
+                setProgress={setProgress}
               />
             </div>
           </ClickAwayListener>
