@@ -124,30 +124,16 @@ const ContextMenu = ({
     if (selectedFilesforDelete[1] !== undefined) {
       for (const fileDelete of selectedFilesforDelete) {
         await DeleteFile(fileDelete, token, setSuccessMessage);
+        await DeleteFolder(fileDelete, token, setSuccessMessage);
       }
-      fetchFiles();
-      fetchSubFolders();
     } else {
       await DeleteFile(FileIdToDownload, token, setSuccessMessage);
-      fetchFiles();
-      fetchSubFolders();
+      await DeleteFolder(FileIdToDownload, token, setSuccessMessage);
     }
-  };
-
-  const handleDeleteFolder = async () => {
-    if (FileIdToDownload) {
-      await DeleteFolder(
-        FileIdToDownload,
-        token,
-        setSuccessMessage,
-        fetchFiles,
-        fetchSubFolders
-      );
-      handleCloseMenu();
-    }
+    fetchFiles();
+    fetchSubFolders();
   };
   const handleRename = () => {
-    debugger;
     try {
       if (FileIdToDownload) {
         const { id, field } = selectedCellParams;
@@ -259,7 +245,7 @@ const ContextMenu = ({
             </MenuItem>
           )}
           {downloadType !== "file" && (
-            <MenuItem onClick={handleDeleteFolder}>
+            <MenuItem onClick={handleDeleteFile}>
               <ListItemIcon>
                 <DeleteForeverSharp fontSize="small" />
               </ListItemIcon>

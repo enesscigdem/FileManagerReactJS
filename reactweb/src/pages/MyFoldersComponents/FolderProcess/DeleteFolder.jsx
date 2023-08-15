@@ -1,13 +1,6 @@
 import axios from "axios";
 
-const DeleteFolder = async (
-  FileIdToDownload,
-  token,
-  setSuccessMessage,
-  fetchFiles,
-  fetchSubFolders
-) => {
-  debugger;
+const DeleteFolder = async (FileIdToDownload, token, setSuccessMessage) => {
   const url = `https://localhost:7104/api/Folder/DeleteFolder/${FileIdToDownload}`;
   try {
     await axios.delete(url, {
@@ -15,9 +8,7 @@ const DeleteFolder = async (
         Authorization: `Bearer ${token}`,
       },
     });
-    setSuccessMessage("Folder deleted successfully!");
-    fetchFiles();
-    fetchSubFolders();
+    setSuccessMessage("Item deleted successfully!");
   } catch (error) {
     console.error("Error deleting folder:", error);
   }

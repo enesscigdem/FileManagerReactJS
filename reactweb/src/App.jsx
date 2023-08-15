@@ -4,7 +4,6 @@ import Login from "./components/Login";
 import ForgotPassword from "./components/ForgotPassword";
 import SidebarComponent from "./components/SidebarComponent";
 import ResetPassword from "./components/ResetPassword";
-import Alert from "@mui/material/Alert";
 
 const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 dakika
 
@@ -38,7 +37,7 @@ const App = () => {
     }
     if (isLoggedIn) checkSession();
 
-    const sessionInterval = setInterval(checkSession, 15100);
+    const sessionInterval = setInterval(checkSession, 151000);
     return () => clearInterval(sessionInterval);
   }, []);
 

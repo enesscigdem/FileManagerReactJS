@@ -11,7 +11,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
@@ -24,7 +23,6 @@ function ForgotPassword() {
     e.preventDefault();
     setResetPassError("Sending email...");
     try {
-      debugger;
       const response = await axios.post(
         "https://localhost:7104/api/User/ForgotPassword",
         {

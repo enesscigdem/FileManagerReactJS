@@ -11,7 +11,6 @@ const handleCreateFolder = async (
     const config = {
       headers: { Authorization: `Bearer ${token}` },
     };
-    debugger;
     await axios.post(
       "https://localhost:7104/api/Folder/CreateFolder",
       {

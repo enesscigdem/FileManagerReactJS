@@ -32,7 +32,6 @@ function ResetPassword() {
     }
 
     try {
-      debugger;
       const response = await axios.post(
         "https://localhost:7104/api/User/ResetPassword",
         {

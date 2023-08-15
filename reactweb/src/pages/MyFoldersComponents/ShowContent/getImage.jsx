@@ -1,6 +1,5 @@
 import axios from "axios";
 const getImage = async (FileIdToDownload, token) => {
-  debugger;
   try {
     const config = {
       headers: { Authorization: `Bearer ${token}` },

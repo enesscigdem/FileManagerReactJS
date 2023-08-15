@@ -1,3 +1,4 @@
+import { DeleteSweepSharp } from "@mui/icons-material";
 import React, { useState } from "react";
 import { FaBars, FaSignOutAlt, FaFolderOpen } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
@@ -10,6 +11,11 @@ const Sidebar = ({ children, onLogout, userID, token }) => {
       path: "/myFolders",
       name: "My Folders",
       icon: <FaFolderOpen />,
+    },
+    {
+      path: "/bin",
+      name: "Bin",
+      icon: <DeleteSweepSharp />,
     },
   ];
 

@@ -76,7 +76,6 @@ const FileGrid = ({
     fetchSubFolders();
   };
   const handleToggle = (event) => {
-    debugger;
     setAnchorPosition(
       event.clientX !== 0 && event.clientY !== 0
         ? { left: event.clientX, top: event.clientY }
@@ -136,7 +135,6 @@ const FileGrid = ({
   }, []);
 
   const handleCellEditStop = async (params, event) => {
-    debugger;
     event.preventDefault();
     const { id, field } = params;
     const newValue = event.target.value;

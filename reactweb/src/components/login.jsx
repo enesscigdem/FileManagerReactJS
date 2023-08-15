@@ -32,7 +32,6 @@ const Login = ({ onLoginSuccess }) => {
     setLoginError(null);
 
     try {
-      debugger;
       const response = await axios.post(
         "https://localhost:7104/api/User/Login",
         {
@@ -62,7 +61,12 @@ const Login = ({ onLoginSuccess }) => {
               alignItems: "center",
             }}
           >
-            <Card sx={{ minWidth: 500, marginTop: 8 }}>
+            <Card
+              sx={{
+                minWidth: 500,
+                marginTop: 8,
+              }}
+            >
               <CardContent>
                 <Typography sx={{ marginRight: 5, textAlign: "center" }}>
                   <img

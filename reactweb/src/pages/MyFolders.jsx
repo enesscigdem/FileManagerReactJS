@@ -102,7 +102,6 @@ const MyFolders = ({ userID, token }) => {
   };
 
   const handleFolderClick = (folderId) => {
-    debugger;
     const selectedFolder2 = foldersAll.find((folder) => folder.id === folderId);
     setSelectedFolder(selectedFolder2);
   };
@@ -134,7 +133,7 @@ const MyFolders = ({ userID, token }) => {
           />
         </>
       ) : (
-        <div />
+        <FileGrid rows={[...subFolders, ...files]} folderPath={folderPath} />
       )}
     </div>
   );
